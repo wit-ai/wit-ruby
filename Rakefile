@@ -12,8 +12,6 @@ spec = Gem::Specification.new do |s|
 	s.license = 'EPL-1.0'
 	s.platform = Gem::Platform::RUBY
 	s.files = Dir.glob("ext/wit/**/*")
-	#s.files = Dir.glob("ext/wit/**/*")
-	#s.files = %w[ext/wit/extconf.rb ext/wit/wit.c ext/wit/libwit/lib/libwit.a ext/wit/libwit/include/wit.h]
 	s.extensions = %w[ext/wit/extconf.rb]
 end
 
