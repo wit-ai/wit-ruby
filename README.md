@@ -12,6 +12,14 @@ This package requires:
 
 ## Installation instructions
 
+### From RubyGems
+
+```bash
+gem install wit
+```
+
+### From sources
+
 Run the following command into the main directory (where the `wit.gemspec` is located):
 
 ```bash
