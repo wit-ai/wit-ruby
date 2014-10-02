@@ -33,3 +33,7 @@ Wit.close
 ```
 
 See example files for further information.
+
+## Credentials
+
+Thanks to [Justin Workman](http://github.com/xtagon) for releasing a first version in October 2013. We really appreciate!
