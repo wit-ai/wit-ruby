@@ -7,20 +7,12 @@ This is the Ruby SDK for [Wit.AI](http://wit.ai).
 This package requires:
 
 * libsox (`sudo apt-get install libsox2` on Debian, `brew install sox` on OS X)
-* a recent Ruby (tested on 2.1.3) - install it via RVM e.g. `rvm install 2.1.3` with the [Rake compiler](https://github.com/luislavena/rake-compiler) or [RubyGems](http://rubygems.org)
+* a recent Ruby (tested on 2.1.3) - install it via [RVM](http://rvm.io) e.g. `rvm install 2.1.3` with [RubyGems](http://rubygems.org)
 * [Cargo](http://crates.io/)
 
 ## Installation instructions
 
-Run the following command into the main directory (where the `Rakefile` is located):
-
-### Using the Rake compiler
-
-```bash
-rake compile && rake gem && gem install pkg/wit-1.0.0.gem
-```
-
-### Using RubyGems
+Run the following command into the main directory (where the `wit.gemspec` is located):
 
 ```bash
 gem build wit.gemspec

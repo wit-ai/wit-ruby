@@ -2,6 +2,8 @@ require "mkmf"
 
 PATH = File.expand_path(File.dirname(__FILE__))
 
+abort "missing Cargo (http://crates.io)" unless system("cargo")
+
 if not File.exist?(PATH + '/libwit')
 	p "Cloning libwit repository..."
 	abort "unable to clone libwit repository" unless system("git clone https://github.com/wit-ai/libwit.git", :chdir=> PATH)

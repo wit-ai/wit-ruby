@@ -3,8 +3,8 @@
 #include "wit.h"
 
 struct wit_context *context;
-
 static VALUE e_WitError;
+static VALUE rb_cb;
 
 static VALUE libwit_init(int argc, VALUE *argv, VALUE obj) {
 	const char *device_opt = NULL;
@@ -49,9 +49,11 @@ static VALUE libwit_voice_query_stop(VALUE obj) {
 	const char *resp;
 	if (context == NULL)
 		rb_raise(e_WitError, "Wit context uninitialized (did you call Wit.init?)");
+	VALUE str = Qnil;
 	resp = wit_voice_query_stop(context);
-	VALUE str = rb_str_new2(resp);
-	free((char *)resp);
+	if (resp != NULL)
+		str = rb_str_new2(resp);
+	xfree((char *)resp);
 	return str;
 }
 
@@ -63,22 +65,20 @@ static VALUE libwit_voice_query_auto(VALUE obj, VALUE access_token)
 	Check_Type(access_token, T_STRING);
 	resp = wit_voice_query_auto(context, StringValuePtr(access_token));
 	VALUE str = rb_str_new2(resp);
-	free((char *)resp);
+	xfree((char *)resp);
 	return str;
 }
 
-VALUE rb_cb;
-
 static VALUE thread_wrapper_proc(void *args) {
 	VALUE str = rb_str_new2((char *) args);
-	free(args);
+	xfree(args);
 	rb_funcall(rb_cb, rb_intern("call"), 1, str);
 	return Qnil;
 }
 
 static VALUE thread_wrapper_meth(void *args) {
 	VALUE str = rb_str_new2((char *) args);
-	free(args);
+	xfree(args);
 	rb_funcall(rb_class_of(rb_cb), rb_to_id(rb_cb), 1, str);
 	return Qnil;
 }
