@@ -31,8 +31,10 @@ static VALUE libwit_text_query(VALUE obj, VALUE text, VALUE access_token) {
 		rb_raise(e_WitError, "Wit context uninitialized (did you call Wit.init?)");
 	Check_Type(text, T_STRING);
 	Check_Type(access_token, T_STRING);
+	VALUE str = Qnil;
 	resp = wit_text_query(context, StringValuePtr(text), StringValuePtr(access_token));
-	VALUE str = rb_str_new2(resp);
+	if (resp != NULL)
+		str = rb_str_new2(resp);
 	xfree((char *)resp);
 	return str;
 }
@@ -63,21 +65,27 @@ static VALUE libwit_voice_query_auto(VALUE obj, VALUE access_token)
 	if (context == NULL)
 		rb_raise(e_WitError, "Wit context uninitialized (did you call Wit.init?)");
 	Check_Type(access_token, T_STRING);
+	VALUE str = Qnil;
 	resp = wit_voice_query_auto(context, StringValuePtr(access_token));
-	VALUE str = rb_str_new2(resp);
+	if (resp != NULL)
+		str = rb_str_new2(resp);
 	xfree((char *)resp);
 	return str;
 }
 
 static VALUE thread_wrapper_proc(void *args) {
-	VALUE str = rb_str_new2((char *) args);
+	VALUE str = Qnil;
+        if ((char *) args != NULL)
+		str = rb_str_new2((char *) args);
 	xfree(args);
 	rb_funcall(rb_cb, rb_intern("call"), 1, str);
 	return Qnil;
 }
 
 static VALUE thread_wrapper_meth(void *args) {
-	VALUE str = rb_str_new2((char *) args);
+	VALUE str = Qnil;
+	if ((char *) args != NULL)
+		str = rb_str_new2((char *) args);
 	xfree(args);
 	rb_funcall(rb_class_of(rb_cb), rb_to_id(rb_cb), 1, str);
 	return Qnil;
