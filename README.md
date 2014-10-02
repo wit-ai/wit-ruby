@@ -24,7 +24,7 @@ Run the following command into the main directory (where the `wit.gemspec` is lo
 
 ```bash
 gem build wit.gemspec
-gem install wit-1.0.0.gem
+gem install wit-*.gem
 ```
 
 ## Usage
