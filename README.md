@@ -7,8 +7,7 @@ This is the Ruby SDK for [Wit.AI](http://wit.ai).
 This package requires:
 
 * libsox (`sudo apt-get install libsox2` on Debian, `brew install sox` on OS X)
-* a recent Ruby (tested on 2.1.3) - install it via [RVM](http://rvm.io) e.g. `rvm install 2.1.3` with [RubyGems](http://rubygems.org)
-* [Cargo](http://crates.io/)
+* a Ruby (>= 2.0.0) - install it via [RVM](http://rvm.io) e.g. `rvm install 2.1.3` with [RubyGems](http://rubygems.org)
 
 ## Installation instructions
 
