@@ -13,17 +13,18 @@ LIB_DIRS = [
 	LIBDIR
 ]
 
-if RUBY_PLATFORM.include? 'arm'
-	system('curl -o libwit.a https://raw.githubusercontent.com/wit-ai/libwit-ruby/master/ext/wit/libwit/lib/libwit-armv6.a', :chdir=> PATH + '/libwit/lib')
-elsif RUBY_PLATFORM.include? '64'
-	if RUBY_PLATFORM.include? 'darwin'
-		system('curl -o libwit.a https://raw.githubusercontent.com/wit-ai/libwit-ruby/master/ext/wit/libwit/lib/libwit-64-darwin.a', :chdir=> PATH + '/libwit/lib')
+if RUBY_PLATFORM.include? "arm"
+	LIBWIT_FILE = "libwit-armv6.a"
+elsif RUBY_PLATFORM.include? "64"
+	if RUBY_PLATFORM.include? "darwin"
+		LIBWIT_FILE = "libwit-64-darwin.a"
 	else
-		system('curl -o libwit.a https://raw.githubusercontent.com/wit-ai/libwit-ruby/master/ext/wit/libwit/lib/libwit-64-linux.a', :chdir=> PATH + '/libwit/lib')
+		LIBWIT_FILE = "libwit-64-linux.a"
 	end
 else
-	system('curl -o libwit.a https://raw.githubusercontent.com/wit-ai/libwit-ruby/master/ext/wit/libwit/lib/libwit-32-linux.a', :chdir=> PATH + '/libwit/lib')
+	LIBWIT_FILE = "libwit-32-linux.a"
 end
+abort "unable to retrieve libwit" unless system('curl -o libwit.a https://raw.githubusercontent.com/wit-ai/libwit/master/releases/' + LIBWIT_FILE, :chdir=> PATH + '/libwit/lib')
 
 $LOCAL_LIBS = '-lwit -lsox -lcurl'
 
