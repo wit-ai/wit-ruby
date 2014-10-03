@@ -14,7 +14,7 @@ static VALUE libwit_init(int argc, VALUE *argv, VALUE obj) {
 		Check_Type(device, T_STRING);
 		device_opt = StringValuePtr(device);
 	}
-	context = wit_init(device_opt);
+	context = wit_init(device_opt, 4);
 	return Qnil;
 }
 
