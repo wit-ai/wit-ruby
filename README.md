@@ -1,4 +1,4 @@
-# Wit Ruby SDK
+# Wit Ruby SDK [![Gem Version](https://badge.fury.io/rb/wit.svg)](http://badge.fury.io/rb/wit)
 
 This is the Ruby SDK for [Wit.AI](http://wit.ai).
 
