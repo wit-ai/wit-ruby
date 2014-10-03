@@ -1,5 +1,4 @@
 pkg/
 tmp/
 lib/
-ext/wit/libwit/
 *.gem
