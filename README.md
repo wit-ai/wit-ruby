@@ -15,7 +15,7 @@ This package requires:
 ### From RubyGems
 
 ```bash
-gem install wit
+gem install wit -V
 ```
 
 ### From sources
@@ -24,7 +24,7 @@ Run the following command into the main directory (where the `wit.gemspec` is lo
 
 ```bash
 gem build wit.gemspec
-gem install wit-*.gem
+gem install wit-*.gem -V
 ```
 
 ## Usage
