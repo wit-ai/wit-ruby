@@ -1,5 +1,4 @@
 #include <ruby.h>
-#include <ruby/thread.h>
 #include "wit.h"
 
 struct wit_context *context;

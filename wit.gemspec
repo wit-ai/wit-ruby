@@ -11,5 +11,5 @@ Gem::Specification.new do |s|
 	s.platform = Gem::Platform::RUBY
 	s.files = Dir.glob("ext/wit/**/*")
 	s.extensions = %w[ext/wit/extconf.rb]
-	s.required_ruby_version = '>= 2.0.0'
+	s.required_ruby_version = '>= 1.9.1'
 end
