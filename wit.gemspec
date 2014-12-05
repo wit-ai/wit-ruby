@@ -7,7 +7,7 @@ Gem::Specification.new do |s|
 	s.authors = ["Julien Odent"]
 	s.email = 'julien@wit.ai'
 	s.homepage = 'http://wit.ai'
-	s.license = 'EPL-1.0'
+	s.license = 'GPL-2.0'
 	s.platform = Gem::Platform::RUBY
 	s.files = Dir.glob("ext/wit/**/*")
 	s.extensions = %w[ext/wit/extconf.rb]
