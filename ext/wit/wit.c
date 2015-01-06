@@ -7,13 +7,22 @@ static VALUE rb_cb;
 
 static VALUE libwit_init(int argc, VALUE *argv, VALUE obj) {
 	const char *device_opt = NULL;
+	unsigned int verbosity = 4;
 	VALUE device = Qnil;
-	rb_scan_args(argc, argv, "01", &device);
+	VALUE verbosity_level = Qnil;
+	rb_scan_args(argc, argv, "02", &device, &verbosity_level);
+
 	if (device != Qnil) {
 		Check_Type(device, T_STRING);
 		device_opt = StringValuePtr(device);
 	}
-	context = wit_init(device_opt, 4);
+
+	if (verbosity_level != Qnil) {
+		Check_Type(verbosity_level, T_FIXNUM);
+		verbosity = NUM2UINT(verbosity_level);
+	}
+
+	context = wit_init(device_opt, verbosity);
 	return Qnil;
 }
 
