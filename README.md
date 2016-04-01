@@ -1,47 +1,41 @@
-# Wit Ruby SDK [![Gem Version](https://badge.fury.io/rb/wit.svg)](http://badge.fury.io/rb/wit)
+# wit-ruby
 
-This is the Ruby SDK for [Wit.AI](http://wit.ai).
+`wit-ruby` is a Ruby client to easily use the [Wit.ai](http://wit.ai) HTTP API.
 
-## Prerequisites
-
-This package requires:
-
-* libsox (with -dev files on Debian/Ubuntu, `brew install sox` on OS X)
-* libcurl (with -dev files on Debin/Ubuntu, `brew install curl` on OS X)
-* a recent Ruby (>= 2.0.0) - install it via [RVM](http://rvm.io) e.g. `rvm install 2.1.3` with [RubyGems](http://rubygems.org)
-
-## Installation instructions
-
-### From RubyGems
+## Install
 
 ```bash
-gem install wit -V
-```
-
-### From sources
-
-Run the following command into the main directory (where the `wit.gemspec` is located):
-
-```bash
-gem build wit.gemspec
-gem install wit-*.gem -V
+gem install wit
 ```
 
 ## Usage
 
 ```ruby
 require 'wit'
-
-access_token = 'ACCESS_TOKEN'
-
-Wit.init
-p "Response: #{Wit.text_query("turn on the lights in the kitchen", access_token)}"
-p "Response: #{Wit.voice_query_auto(access_token)}"
-Wit.close
+p Wit.message('MY_ACCESS_TOKEN', 'turn on the lights in the kitchen')
 ```
 
-See example files for further information.
+See below for more examples.
 
-## Credentials
+## Install from source
+
+```bash
+git clone https://github.com/wit-ai/wit-ruby
+gem build wit.gemspec
+gem install wit-*.gem
+```
+
+## API
+
+```ruby
+require 'wit'
+
+access_token = 'MY_ACCESS_TOKEN'
+
+# GET /message to extract intent and entities from user request
+p Wit.message(access_token, 'turn on the lights in the kitchen')
+```
+
+## Thanks
 
 Thanks to [Justin Workman](http://github.com/xtagon) for releasing a first version in October 2013. We really appreciate!
