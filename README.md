@@ -1,40 +1,33 @@
 # wit-ruby
 
-`wit-ruby` is a Ruby client to easily use the [Wit.ai](http://wit.ai) HTTP API.
+`wit-ruby` is the Ruby SDK for [Wit.ai](http://wit.ai).
 
 ## Install
 
+From RubyGems:
 ```bash
 gem install wit
 ```
 
-## Usage
-
-```ruby
-require 'wit'
-p Wit.message('MY_ACCESS_TOKEN', 'turn on the lights in the kitchen')
-```
-
-See below for more examples.
-
-## Install from source
-
+From source:
 ```bash
 git clone https://github.com/wit-ai/wit-ruby
 gem build wit.gemspec
 gem install wit-*.gem
 ```
 
+## Usage
+
+See the `examples` folder for examples.
+
 ## API
 
-```ruby
-require 'wit'
+`wit-ruby` provides a Wit class with the following methods:
+* `message` - the Wit message API
+* `converse` - the low-level Wit converse API
+* `run_actions` - a higher-level method to the Wit converse API
 
-access_token = 'MY_ACCESS_TOKEN'
-
-# GET /message to extract intent and entities from user request
-p Wit.message(access_token, 'turn on the lights in the kitchen')
-```
+See the [docs](https://wit.ai/docs) for more information.
 
 ## Thanks
 
