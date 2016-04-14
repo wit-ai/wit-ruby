@@ -1,4 +1,5 @@
 require 'json'
+require 'logger'
 require 'net/http'
 
 WIT_API_HOST = ENV['WIT_URL'] || 'https://api.wit.ai'
@@ -42,9 +43,24 @@ def validate_actions(actions)
 end
 
 class Wit
+  class << self
+    attr_writer :logger
+
+    def logger
+      @logger ||= begin
+        $stdout.sync = true
+        Logger.new(STDOUT)
+      end
+    end
+  end
+
   def initialize(access_token, actions)
     @access_token = access_token
     @actions = validate_actions actions
+  end
+
+  def logger
+    self.class.logger
   end
 
   def message(msg)
