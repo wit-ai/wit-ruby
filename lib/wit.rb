@@ -1,4 +1,5 @@
 require 'json'
+require 'logger'
 require 'net/http'
 
 WIT_API_HOST = ENV['WIT_URL'] || 'https://api.wit.ai'
@@ -42,9 +43,24 @@ def validate_actions(actions)
 end
 
 class Wit
+  class << self
+    attr_writer :logger
+
+    def logger
+      @logger ||= begin
+        $stdout.sync = true
+        Logger.new(STDOUT)
+      end.tap { |logger| logger.level = Logger::INFO }
+    end
+  end
+
   def initialize(access_token, actions)
     @access_token = access_token
     @actions = validate_actions actions
+  end
+
+  def logger
+    self.class.logger
   end
 
   def message(msg)
@@ -72,28 +88,28 @@ class Wit
     if type == 'msg'
       raise WitException.new 'unknown action: say' unless @actions.has_key? :say
       msg = rst['msg']
-      p "Executing say with: #{msg}"
+      logger.info "Executing say with: #{msg}"
       @actions[:say].call session_id, msg
     elsif type == 'merge'
       raise WitException.new 'unknown action: merge' unless @actions.has_key? :merge
-      p 'Executing merge'
+      logger.info 'Executing merge'
       context = @actions[:merge].call context, rst['entities']
       if context.nil?
-        p 'WARN missing context - did you forget to return it?'
+        logger.warn 'missing context - did you forget to return it?'
         context = {}
       end
     elsif type == 'action'
       action = rst['action'].to_sym
       raise WitException.new "unknown action: #{action}" unless @actions.has_key? action
-      p "Executing action #{action}"
+      logger.info "Executing action #{action}"
       context = @actions[action].call context
       if context.nil?
-        p 'WARN missing context - did you forget to return it?'
+        logger.warn 'missing context - did you forget to return it?'
         context = {}
       end
     elsif type == 'error'
       raise WitException.new 'unknown action: error' unless @actions.has_key? :error
-      p 'Executing error'
+      logger.info 'Executing error'
       @actions[:error].call session_id, 'unknown action: error'
     else
       raise WitException.new "unknown type: #{type}"
