@@ -1,3 +1,4 @@
 *.gem
 *.swo
 *.swp
+Gemfile.lock
