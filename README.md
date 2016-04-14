@@ -22,7 +22,7 @@ See the `examples` folder for examples.
 
 ### Logging
 
-Default logging is to `STDOUT` with `DEBUG` level. Silence logger as follows.
+Default logging is to `STDOUT` with `INFO` level. Silence logger as follows.
 
 ```ruby
 Wit.logger.level = Logger::WARN

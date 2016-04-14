@@ -50,7 +50,7 @@ class Wit
       @logger ||= begin
         $stdout.sync = true
         Logger.new(STDOUT)
-      end
+      end.tap { |logger| logger.level = Logger::INFO }
     end
   end
 
