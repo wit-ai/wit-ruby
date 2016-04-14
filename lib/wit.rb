@@ -88,28 +88,28 @@ class Wit
     if type == 'msg'
       raise WitException.new 'unknown action: say' unless @actions.has_key? :say
       msg = rst['msg']
-      logger.info("Executing say with: #{msg}")
+      logger.info "Executing say with: #{msg}"
       @actions[:say].call session_id, msg
     elsif type == 'merge'
       raise WitException.new 'unknown action: merge' unless @actions.has_key? :merge
-      logger.info('Executing merge')
+      logger.info 'Executing merge'
       context = @actions[:merge].call context, rst['entities']
       if context.nil?
-        logger.warn('missing context - did you forget to return it?')
+        logger.warn 'missing context - did you forget to return it?'
         context = {}
       end
     elsif type == 'action'
       action = rst['action'].to_sym
       raise WitException.new "unknown action: #{action}" unless @actions.has_key? action
-      logger.info("Executing action #{action}")
+      logger.info "Executing action #{action}"
       context = @actions[action].call context
       if context.nil?
-        logger.warn('missing context - did you forget to return it?')
+        logger.warn 'missing context - did you forget to return it?'
         context = {}
       end
     elsif type == 'error'
       raise WitException.new 'unknown action: error' unless @actions.has_key? :error
-      logger.info('Executing error')
+      logger.info 'Executing error'
       @actions[:error].call session_id, 'unknown action: error'
     else
       raise WitException.new "unknown type: #{type}"
