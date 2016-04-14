@@ -20,6 +20,14 @@ gem install wit-*.gem
 
 See the `examples` folder for examples.
 
+### Logging
+
+Default logging is to `STDOUT` with `DEBUG` level. Silence logger as follows.
+
+```ruby
+Wit.logger.level = Logger::WARN
+```
+
 ## API
 
 `wit-ruby` provides a Wit class with the following methods:
