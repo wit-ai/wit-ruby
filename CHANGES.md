@@ -1,3 +1,8 @@
+## v3.1
+
+- allows for custom logging
+- better error message
+
 ## v3.0
 
 Bot Engine integration

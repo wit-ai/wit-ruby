@@ -21,7 +21,9 @@ def req(access_token, meth_class, path, params={}, payload={})
   Net::HTTP.start uri.host, uri.port, {:use_ssl => uri.scheme == 'https'} do |http|
     rsp = http.request request
     raise WitException.new "HTTP error code=#{rsp.code}" unless rsp.code.to_i <= 200
-    JSON.parse rsp.body
+    json = JSON.parse rsp.body
+    raise WitException.new "Wit responded with an error: #{json['error']}" if json.has_key? 'error'
+    json
   end
 end
 
