@@ -1,3 +1,13 @@
+## v3.2
+
+Updating action parameters
+
+### breaking
+
+- the `merge` action now takes 4 parameters: `session_id`, `context`, `entities`, `msg`
+- the `error` action now takes `context` as second parameter
+- custom actions now take 2 parameters: `session_id`, `context`
+
 ## v3.1
 
 - allows for custom logging

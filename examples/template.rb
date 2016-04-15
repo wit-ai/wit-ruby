@@ -6,10 +6,10 @@ actions = {
   :say => -> (session_id, msg) {
     p msg
   },
-  :merge => -> (context, entities) {
+  :merge => -> (session_id, context, entities, msg) {
     return context
   },
-  :error => -> (session_id, msg) {
+  :error => -> (session_id, context) {
     p 'Oops I don\'t know what to do.'
   },
 }

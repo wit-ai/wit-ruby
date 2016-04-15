@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.name = 'wit'
-  s.version = '3.1.0'
-  s.date = '2014-12-05'
+  s.version = '3.2.0'
+  s.date = Date.today.to_s
   s.summary = 'Ruby SDK for Wit.ai'
   s.description = 'Ruby SDK for Wit.ai'
   s.authors = ['The Wit Team']

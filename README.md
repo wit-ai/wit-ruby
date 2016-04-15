@@ -45,16 +45,17 @@ actions = {
   :say => -> (session_id, msg) {
     p msg
   },
-  :merge => -> (context, entities) {
+  :merge => -> (session_id, context, entities, msg) {
     return context
   },
-  :error => -> (session_id, msg) {
+  :error => -> (session_id, context) {
     p 'Oops I don\'t know what to do.'
   },
 }
 ```
 
-A custom action takes one parameter:
+A custom action takes the following parameters:
+* `session_id` - a unique identifier describing the user session
 * `context` - the `Hash` representing the session state
 
 Example:

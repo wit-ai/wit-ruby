@@ -30,7 +30,7 @@ actions = {
   :say => -> (session_id, msg) {
     p msg
   },
-  :merge => -> (context, entities) {
+  :merge => -> (session_id, context, entities, msg) {
     new_context = context.clone
     new_context.delete 'joke'
     new_context.delete 'ack'
@@ -40,10 +40,10 @@ actions = {
     new_context['ack'] = sentiment == 'positive' ? 'Glad you liked it.' : 'Hmm.' unless sentiment.nil?
     return new_context
   },
-  :error => -> (session_id, msg) {
+  :error => -> (session_id, context) {
     p 'Oops I don\'t know what to do.'
   },
-  :'select-joke' => -> (context) {
+  :'select-joke' => -> (session_id, context) {
     new_context = context.clone
     new_context['joke'] = all_jokes[new_context['cat'] || 'default'].sample
     return new_context
