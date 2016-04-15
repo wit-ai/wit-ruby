@@ -27,26 +27,24 @@ all_jokes = {
 }
 
 actions = {
-  :say => -> (session_id, msg) {
+  :say => -> (session_id, context, msg) {
     p msg
   },
   :merge => -> (session_id, context, entities, msg) {
-    new_context = context.clone
-    new_context.delete 'joke'
-    new_context.delete 'ack'
+    context.delete 'joke'
+    context.delete 'ack'
     category = first_entity_value entities, 'category'
-    new_context['category'] = category unless category.nil?
+    context['category'] = category unless category.nil?
     sentiment = first_entity_value entities, 'sentiment'
-    new_context['ack'] = sentiment == 'positive' ? 'Glad you liked it.' : 'Hmm.' unless sentiment.nil?
-    return new_context
+    context['ack'] = sentiment == 'positive' ? 'Glad you liked it.' : 'Hmm.' unless sentiment.nil?
+    return context
   },
-  :error => -> (session_id, context) {
-    p 'Oops I don\'t know what to do.'
+  :error => -> (session_id, context, error) {
+    p error.message
   },
   :'select-joke' => -> (session_id, context) {
-    new_context = context.clone
-    new_context['joke'] = all_jokes[new_context['cat'] || 'default'].sample
-    return new_context
+    context['joke'] = all_jokes[context['cat'] || 'default'].sample
+    return context
   },
 }
 client = Wit.new access_token, actions

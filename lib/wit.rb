@@ -36,9 +36,9 @@ def validate_actions(actions)
   actions.each_pair do |k, v|
     raise WitException.new "The '#{k}' action name should be a symbol" unless k.is_a? Symbol
     raise WitException.new "The '#{k}' action should be a lambda function" unless v.respond_to? :call and v.lambda?
-    raise WitException.new "The \'say\' action should take 2 arguments: session_id, msg. #{learn_more}" if k == :say and v.arity != 2
+    raise WitException.new "The \'say\' action should take 3 arguments: session_id, context, msg. #{learn_more}" if k == :say and v.arity != 3
     raise WitException.new "The \'merge\' action should take 4 arguments: session_id, context, entities, msg. #{learn_more}" if k == :merge and v.arity != 4
-    raise WitException.new "The \'error\' action should take 2 arguments: session_id, context. #{learn_more}" if k == :error and v.arity != 2
+    raise WitException.new "The \'error\' action should take 3 arguments: session_id, context, error. #{learn_more}" if k == :error and v.arity != 3
     raise WitException.new "The '#{k}' action should take 2 arguments: session_id, context. #{learn_more}" if k != :say and k != :merge and k != :error and v.arity != 2
   end
   return actions
@@ -91,11 +91,11 @@ class Wit
       raise WitException.new 'unknown action: say' unless @actions.has_key? :say
       msg = rst['msg']
       logger.info "Executing say with: #{msg}"
-      @actions[:say].call session_id, msg
+      @actions[:say].call session_id, context.clone, msg
     elsif type == 'merge'
       raise WitException.new 'unknown action: merge' unless @actions.has_key? :merge
       logger.info 'Executing merge'
-      context = @actions[:merge].call session_id, context, rst['entities'], user_message
+      context = @actions[:merge].call session_id, context.clone, rst['entities'], user_message
       if context.nil?
         logger.warn 'missing context - did you forget to return it?'
         context = {}
@@ -104,7 +104,7 @@ class Wit
       action = rst['action'].to_sym
       raise WitException.new "unknown action: #{action}" unless @actions.has_key? action
       logger.info "Executing action #{action}"
-      context = @actions[action].call session_id, context
+      context = @actions[action].call session_id, context.clone
       if context.nil?
         logger.warn 'missing context - did you forget to return it?'
         context = {}
@@ -112,7 +112,7 @@ class Wit
     elsif type == 'error'
       raise WitException.new 'unknown action: error' unless @actions.has_key? :error
       logger.info 'Executing error'
-      @actions[:error].call session_id, context
+      @actions[:error].call session_id, context.clone, WitException.new('Oops, I don\'t know what to do.')
     else
       raise WitException.new "unknown type: #{type}"
     end

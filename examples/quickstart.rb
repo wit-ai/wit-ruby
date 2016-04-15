@@ -13,22 +13,20 @@ def first_entity_value(entities, entity)
 end
 
 actions = {
-  :say => -> (session_id, msg) {
+  :say => -> (session_id, context, msg) {
     p msg
   },
   :merge => -> (session_id, context, entities, msg) {
-    new_context = context.clone
     loc = first_entity_value entities, 'location'
-    new_context['loc'] = loc unless loc.nil?
-    return new_context
+    context['loc'] = loc unless loc.nil?
+    return context
   },
-  :error => -> (session_id, context) {
-    p 'Oops I don\'t know what to do.'
+  :error => -> (session_id, context, error) {
+    p error.message
   },
   :'fetch-weather' => -> (session_id, context) {
-    new_context = context.clone
-    new_context['forecast'] = 'sunny'
-    return new_context
+    context['forecast'] = 'sunny'
+    return context
   },
 }
 client = Wit.new access_token, actions

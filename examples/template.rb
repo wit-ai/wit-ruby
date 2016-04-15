@@ -3,14 +3,14 @@ require 'wit'
 access_token = 'YOUR_ACCESS_TOKEN'
 
 actions = {
-  :say => -> (session_id, msg) {
+  :say => -> (session_id, context, msg) {
     p msg
   },
   :merge => -> (session_id, context, entities, msg) {
     return context
   },
-  :error => -> (session_id, context) {
-    p 'Oops I don\'t know what to do.'
+  :error => -> (session_id, context, error) {
+    p error.message
   },
 }
 client = Wit.new access_token, actions
