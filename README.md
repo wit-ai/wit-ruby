@@ -42,14 +42,14 @@ You need to provide at least an implementation for the special actions `:say`, `
 A minimal `actions` `Hash` looks like this:
 ```ruby
 actions = {
-  :say => -> (session_id, msg) {
+  :say => -> (session_id, context, msg) {
     p msg
   },
   :merge => -> (session_id, context, entities, msg) {
     return context
   },
-  :error => -> (session_id, context) {
-    p 'Oops I don\'t know what to do.'
+  :error => -> (session_id, context, error) {
+    p error.message
   },
 }
 ```
