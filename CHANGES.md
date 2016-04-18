@@ -1,3 +1,8 @@
+## v3.3.1
+
+- fixed recursive call when running actions
+- throws an exception if context passed is not a Hash
+
 ## v3.3
 
 Unifying action parameters

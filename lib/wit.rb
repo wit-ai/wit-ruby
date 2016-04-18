@@ -72,6 +72,7 @@ class Wit
   end
 
   def converse(session_id, msg, context={})
+    raise WitException.new 'context should be a Hash' unless context.is_a? Hash
     params = {}
     params[:q] = msg unless msg.nil?
     params[:session_id] = session_id
@@ -116,10 +117,11 @@ class Wit
     else
       raise WitException.new "unknown type: #{type}"
     end
-    return run_actions session_id, nil, context, max_steps - 1
+    return run_actions_ session_id, nil, context, max_steps - 1, user_message
   end
 
   def run_actions(session_id, message, context={}, max_steps=DEFAULT_MAX_STEPS)
+    raise WitException.new 'context should be a Hash' unless context.is_a? Hash
     return run_actions_ session_id, message, context, max_steps, message
   end
 
