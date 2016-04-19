@@ -66,17 +66,23 @@ class Wit
   end
 
   def message(msg)
+    logger.debug "Message request: msg=#{msg}"
     params = {}
     params[:q] = msg unless msg.nil?
-    req @access_token, Net::HTTP::Get, '/message', params
+    res = req @access_token, Net::HTTP::Get, '/message', params
+    logger.debug "Message response: #{res}"
+    return res
   end
 
   def converse(session_id, msg, context={})
+    logger.debug "Converse request: session_id=#{session_id} msg=#{msg} context=#{context}"
     raise WitException.new 'context should be a Hash' unless context.is_a? Hash
     params = {}
     params[:q] = msg unless msg.nil?
     params[:session_id] = session_id
-    req @access_token, Net::HTTP::Post, '/converse', params, context
+    res = req @access_token, Net::HTTP::Post, '/converse', params, context
+    logger.debug "Converse response: #{res}"
+    return res
   end
 
   def run_actions_(session_id, message, context, max_steps, user_message)
