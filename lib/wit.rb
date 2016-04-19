@@ -60,6 +60,8 @@ class Wit
     end
   end
 
+  attr_reader :conversation_log
+
   def initialize(access_token, actions)
     @access_token = access_token
     @actions = validate_actions actions
@@ -83,10 +85,11 @@ class Wit
     req @access_token, Net::HTTP::Post, '/converse', params, context
   end
 
-  def run_actions_(session_id, message, context, max_steps, user_message, min_confidence)
+  def run_actions_(session_id, message, context, max_steps, user_message, min_confidence, log_conversation)
     raise WitException.new 'max iterations reached' unless max_steps > 0
 
     rst = converse session_id, message, context
+    @conversation_log << rst if log_conversation
     confidence = rst['confidence']
     raise WitException.new 'couldn\'t find confidence in Wit response' unless confidence
     raise WitLowConfidenceException.new "#{confidence} below minimum confidence #{min_confidence}" if confidence < min_confidence
@@ -124,12 +127,13 @@ class Wit
     else
       raise WitException.new "unknown type: #{type}"
     end
-    return run_actions_ session_id, nil, context, max_steps - 1, user_message, min_confidence
+    return run_actions_ session_id, nil, context, max_steps - 1, user_message, min_confidence, log_conversation
   end
 
-  def run_actions(session_id, message, context={}, max_steps=DEFAULT_MAX_STEPS, min_confidence=MIN_CONFIDENCE)
+  def run_actions(session_id, message, context={}, max_steps=DEFAULT_MAX_STEPS, min_confidence=MIN_CONFIDENCE, log_conversation=false)
     raise WitException.new 'context should be a Hash' unless context.is_a? Hash
-    return run_actions_ session_id, message, context, max_steps, message, min_confidence
+    @conversation_log = [] if log_conversation
+    return run_actions_ session_id, message, context, max_steps, message, min_confidence, log_conversation
   end
 
   private :run_actions_
