@@ -4,8 +4,12 @@ require 'net/http'
 
 WIT_API_HOST = ENV['WIT_URL'] || 'https://api.wit.ai'
 DEFAULT_MAX_STEPS = 5
+MIN_CONFIDENCE = 0.0 # Disabled by default
 
 class WitException < Exception
+end
+
+class WitLowConfidenceException < WitException
 end
 
 def req(access_token, meth_class, path, params={}, payload={})
@@ -79,10 +83,13 @@ class Wit
     req @access_token, Net::HTTP::Post, '/converse', params, context
   end
 
-  def run_actions_(session_id, message, context, max_steps, user_message)
+  def run_actions_(session_id, message, context, max_steps, user_message, min_confidence)
     raise WitException.new 'max iterations reached' unless max_steps > 0
 
     rst = converse session_id, message, context
+    confidence = rst['confidence']
+    raise WitException.new 'couldn\'t find confidence in Wit response' unless confidence
+    raise WitLowConfidenceException.new "#{confidence} below minimum confidence #{min_confidence}" if confidence < min_confidence
     raise WitException.new 'couldn\'t find type in Wit response' unless rst.has_key? 'type'
 
     type = rst['type']
@@ -117,12 +124,12 @@ class Wit
     else
       raise WitException.new "unknown type: #{type}"
     end
-    return run_actions_ session_id, nil, context, max_steps - 1, user_message
+    return run_actions_ session_id, nil, context, max_steps - 1, user_message, min_confidence
   end
 
-  def run_actions(session_id, message, context={}, max_steps=DEFAULT_MAX_STEPS)
+  def run_actions(session_id, message, context={}, max_steps=DEFAULT_MAX_STEPS, min_confidence=MIN_CONFIDENCE)
     raise WitException.new 'context should be a Hash' unless context.is_a? Hash
-    return run_actions_ session_id, message, context, max_steps, message
+    return run_actions_ session_id, message, context, max_steps, message, min_confidence
   end
 
   private :run_actions_
