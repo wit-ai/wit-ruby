@@ -35,7 +35,7 @@ def validate_actions(actions)
   end
   actions.each_pair do |k, v|
     raise WitException.new "The '#{k}' action name should be a symbol" unless k.is_a? Symbol
-    raise WitException.new "The '#{k}' action should be a lambda function" unless v.respond_to? :call and v.lambda?
+    raise WitException.new "The '#{k}' action should respond to call and arity" unless v.respond_to? :call and v.respond_to? :arity
     raise WitException.new "The \'say\' action should take 3 arguments: session_id, context, msg. #{learn_more}" if k == :say and v.arity != 3
     raise WitException.new "The \'merge\' action should take 4 arguments: session_id, context, entities, msg. #{learn_more}" if k == :merge and v.arity != 4
     raise WitException.new "The \'error\' action should take 3 arguments: session_id, context, error. #{learn_more}" if k == :error and v.arity != 3
