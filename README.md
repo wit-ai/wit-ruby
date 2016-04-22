@@ -125,6 +125,14 @@ p "Yay, got Wit.ai response: #{resp}"
 
 See the [docs](https://wit.ai/docs) for more information.
 
+### Callbacks
+
+Support custom callbacks upon receiving responses from the message and converse APIs. These default to logging them at debug level. This can also be overwritten.
+
+Example:
+```ruby
+Wit.on_converse_response = ->(res) { puts "Converse confidence: #{res['confidence']}" }
+```
 
 ## Thanks
 
