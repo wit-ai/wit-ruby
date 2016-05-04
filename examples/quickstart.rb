@@ -3,7 +3,11 @@ require 'wit'
 # Quickstart example
 # See https://wit.ai/l5t/Quickstart
 
-access_token = 'YOUR_ACCESS_TOKEN'
+access_token = ARGV.shift
+unless access_token
+  puts 'usage: ruby examples/quickstart.rb <access-token>'
+  exit
+end
 
 def first_entity_value(entities, entity)
   return nil unless entities.has_key? entity
@@ -30,6 +34,4 @@ actions = {
   },
 }
 client = Wit.new access_token, actions
-
-session_id = 'my-user-id-42'
-client.run_actions session_id, 'weather in London', {}
+client.interactive
