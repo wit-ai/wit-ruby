@@ -16,9 +16,15 @@ gem build wit.gemspec
 gem install wit-*.gem
 ```
 
-## Usage
+## Quickstart
 
-See the `examples` folder for examples.
+Run in your terminal:
+
+```bash
+ruby examples/quickstart.rb <your_token>
+```
+
+See the `examples` folder for more examples.
 
 ## API
 
@@ -28,6 +34,7 @@ See the `examples` folder for examples.
 * `message` - the Wit [message API](https://wit.ai/docs/http/20160330#get-intent-via-text-link)
 * `converse` - the low-level Wit [converse API](https://wit.ai/docs/http/20160330#converse-link)
 * `run_actions` - a higher-level method to the Wit converse API
+* `interactive` - starts an interactive conversation with your bot
 
 ### Wit class
 
@@ -122,6 +129,15 @@ resp = client.converse 'my-user-session-42', 'what is the weather in London?', {
 p "Yay, got Wit.ai response: #{resp}"
 ```
 
+
+### interactive
+
+Starts an interactive conversation with your bot.
+
+Example:
+```ruby
+client.interactive
+```
 
 See the [docs](https://wit.ai/docs) for more information.
 

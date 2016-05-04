@@ -1,6 +1,7 @@
 require 'json'
 require 'logger'
 require 'net/http'
+require 'securerandom'
 
 WIT_API_HOST = ENV['WIT_URL'] || 'https://api.wit.ai'
 DEFAULT_MAX_STEPS = 5
@@ -129,6 +130,23 @@ class Wit
   def run_actions(session_id, message, context={}, max_steps=DEFAULT_MAX_STEPS)
     raise WitException.new 'context should be a Hash' unless context.is_a? Hash
     return run_actions_ session_id, message, context, max_steps, message
+  end
+
+  def interactive(context={}, max_steps=DEFAULT_MAX_STEPS)
+    session_id = SecureRandom.uuid
+
+    while true
+      print '> '
+      msg = gets.strip
+
+      begin
+        context = run_actions(session_id, msg, context, max_steps)
+      rescue WitException => exp
+        p exp.message
+      end
+    end
+  rescue Interrupt => _exp
+    puts
   end
 
   private :run_actions_

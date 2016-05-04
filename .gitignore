@@ -1,4 +1,5 @@
 *.gem
 *.swo
 *.swp
+.idea/
 Gemfile.lock
