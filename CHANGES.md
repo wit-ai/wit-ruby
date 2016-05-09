@@ -1,3 +1,5 @@
+- warns instead of throwing when validating actions
+
 ## v3.3.1
 
 - fixed recursive call when running actions

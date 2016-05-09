@@ -30,17 +30,17 @@ end
 
 def validate_actions(actions)
   learn_more = 'Learn more at https://wit.ai/docs/quickstart'
-  raise WitException.new 'The second parameter should be a Hash' unless actions.is_a? Hash
+  Wit.logger.warn 'The second parameter should be a Hash' unless actions.is_a? Hash
   [:say, :merge, :error].each do |action|
-    raise WitException.new "The #{action} action is missing. #{learn_more}" unless actions.has_key? action
+    Wit.logger.warn "The #{action} action is missing. #{learn_more}" unless actions.has_key? action
   end
   actions.each_pair do |k, v|
-    raise WitException.new "The '#{k}' action name should be a symbol" unless k.is_a? Symbol
-    raise WitException.new "The '#{k}' action should be a lambda function" unless v.respond_to? :call and v.lambda?
-    raise WitException.new "The \'say\' action should take 3 arguments: session_id, context, msg. #{learn_more}" if k == :say and v.arity != 3
-    raise WitException.new "The \'merge\' action should take 4 arguments: session_id, context, entities, msg. #{learn_more}" if k == :merge and v.arity != 4
-    raise WitException.new "The \'error\' action should take 3 arguments: session_id, context, error. #{learn_more}" if k == :error and v.arity != 3
-    raise WitException.new "The '#{k}' action should take 2 arguments: session_id, context. #{learn_more}" if k != :say and k != :merge and k != :error and v.arity != 2
+    Wit.logger.warn "The '#{k}' action name should be a symbol" unless k.is_a? Symbol
+    Wit.logger.warn "The '#{k}' action should be a lambda function" unless v.respond_to? :call and v.lambda?
+    Wit.logger.warn "The \'say\' action should take 3 arguments: session_id, context, msg. #{learn_more}" if k == :say and v.arity != 3
+    Wit.logger.warn "The \'merge\' action should take 4 arguments: session_id, context, entities, msg. #{learn_more}" if k == :merge and v.arity != 4
+    Wit.logger.warn "The \'error\' action should take 3 arguments: session_id, context, error. #{learn_more}" if k == :error and v.arity != 3
+    Wit.logger.warn "The '#{k}' action should take 2 arguments: session_id, context. #{learn_more}" if k != :say and k != :merge and k != :error and v.arity != 2
   end
   return actions
 end
