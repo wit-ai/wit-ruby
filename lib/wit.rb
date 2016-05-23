@@ -4,6 +4,7 @@ require 'net/http'
 require 'securerandom'
 
 WIT_API_HOST = ENV['WIT_URL'] || 'https://api.wit.ai'
+WIT_API_VERSION = ENV['WIT_API_VERSION']  || '20160516'
 DEFAULT_MAX_STEPS = 5
 
 class WitException < Exception
@@ -15,7 +16,7 @@ def req(access_token, meth_class, path, params={}, payload={})
 
   request = meth_class.new uri
   request['authorization'] = 'Bearer ' + access_token
-  request['accept'] = 'application/vnd.wit.20160330+json'
+  request['accept'] = 'application/vnd.wit.' + WIT_API_VERSION + '+json'
   request.add_field 'Content-Type', 'application/json'
   request.body = payload.to_json
 
