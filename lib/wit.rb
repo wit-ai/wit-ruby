@@ -110,7 +110,7 @@ class Wit
         context = {}
       end
     elsif type == 'action'
-      action = rst['action'].to_sym
+      action = rst['action'].to_sym rescue rst['action']
       raise WitException.new "unknown action: #{action}" unless @actions.has_key? action
       logger.info "Executing action #{action}"
       context = @actions[action].call session_id, context.clone
