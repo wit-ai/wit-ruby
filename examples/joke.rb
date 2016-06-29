@@ -1,9 +1,15 @@
 require 'wit'
 
+if ARGV.length == 0
+  puts("usage: #{$0} <wit-access-token>")
+  exit 1
+end
+
+access_token = ARGV[0]
+ARGV.shift
+
 # Joke example
 # See https://wit.ai/patapizza/example-joke
-
-access_token = 'YOUR_ACCESS_TOKEN'
 
 def first_entity_value(entities, entity)
   return nil unless entities.has_key? entity
@@ -27,27 +33,28 @@ all_jokes = {
 }
 
 actions = {
-  :say => -> (session_id, context, msg) {
-    p msg
+  send: -> (request, response) {
+    puts("sending... #{response['text']}")
   },
-  :merge => -> (session_id, context, entities, msg) {
+  merge: -> (request) {
+    context = request['context']
+    entities = request['entities']
+
     context.delete 'joke'
     context.delete 'ack'
-    category = first_entity_value entities, 'category'
+    category = first_entity_value(entities, 'category')
     context['category'] = category unless category.nil?
-    sentiment = first_entity_value entities, 'sentiment'
+    sentiment = first_entity_value(entities, 'sentiment')
     context['ack'] = sentiment == 'positive' ? 'Glad you liked it.' : 'Hmm.' unless sentiment.nil?
     return context
   },
-  :error => -> (session_id, context, error) {
-    p error.message
-  },
-  :'select-joke' => -> (session_id, context) {
-    context['joke'] = all_jokes[context['cat'] || 'default'].sample
+  :'select-joke' => -> (request) {
+    context = request['context']
+
+    context['joke'] = all_jokes[context['category'] || 'default'].sample
     return context
   },
 }
-client = Wit.new access_token, actions
 
-session_id = 'my-user-id-42'
-client.run_actions session_id, 'tell me a joke about tech', {}
+client = Wit.new(access_token: access_token, actions: actions)
+client.interactive
