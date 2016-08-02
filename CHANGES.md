@@ -2,6 +2,7 @@
 - Renamed WitException to Wit::Error
 - Changed Wit::Error to inherit from StandardError instead of Exception
 - Moved constants inside Wit namespace
+- Moved #req and #validate_actions to private methods within Wit namespace
 
 ## v4.1.0
 

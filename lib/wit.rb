@@ -3,55 +3,6 @@ require 'logger'
 require 'net/http'
 require 'securerandom'
 
-def req(logger, access_token, meth_class, path, params={}, payload={})
-  uri = URI(WIT_API_HOST + path)
-  uri.query = URI.encode_www_form(params)
-
-  logger.debug("#{meth_class} #{uri}")
-
-  request = meth_class.new(uri)
-  request['authorization'] = 'Bearer ' + access_token
-  request['accept'] = 'application/vnd.wit.' + WIT_API_VERSION + '+json'
-  request.add_field 'Content-Type', 'application/json'
-  request.body = payload.to_json
-
-  Net::HTTP.start(uri.host, uri.port, {:use_ssl => uri.scheme == 'https'}) do |http|
-    rsp = http.request(request)
-    if rsp.code.to_i != 200
-      raise Error.new("HTTP error code=#{rsp.code}")
-    end
-    json = JSON.parse(rsp.body)
-    if json.has_key?('error')
-      raise Error.new("Wit responded with an error: #{json['error']}")
-    end
-    logger.debug("#{meth_class} #{uri} #{json}")
-    json
-  end
-end
-
-def validate_actions(logger, actions)
-  [:send].each do |action|
-    if !actions.has_key?(action)
-      logger.warn "The #{action} action is missing. #{LEARN_MORE}"
-    end
-  end
-  actions.each_pair do |k, v|
-    if !k.is_a?(Symbol)
-      logger.warn "The '#{k}' action name should be a symbol"
-    end
-    if !(v.respond_to?(:call) && v.lambda?)
-      logger.warn "The '#{k}' action should be a lambda function"
-    end
-    if k == :send && v.arity != 2
-      logger.warn "The \'send\' action should take 2 arguments: request and response. #{LEARN_MORE}"
-    end
-    if k != :send && v.arity != 1
-      logger.warn "The '#{k}' action should take 1 argument: request. #{LEARN_MORE}"
-    end
-  end
-  return actions
-end
-
 class Wit
   class Error < StandardError; end
 
@@ -224,4 +175,53 @@ class Wit
   end
 
   private :__run_actions
+
+  def req(logger, access_token, meth_class, path, params={}, payload={})
+    uri = URI(WIT_API_HOST + path)
+    uri.query = URI.encode_www_form(params)
+
+    logger.debug("#{meth_class} #{uri}")
+
+    request = meth_class.new(uri)
+    request['authorization'] = 'Bearer ' + access_token
+    request['accept'] = 'application/vnd.wit.' + WIT_API_VERSION + '+json'
+    request.add_field 'Content-Type', 'application/json'
+    request.body = payload.to_json
+
+    Net::HTTP.start(uri.host, uri.port, {:use_ssl => uri.scheme == 'https'}) do |http|
+      rsp = http.request(request)
+      if rsp.code.to_i != 200
+        raise Error.new("HTTP error code=#{rsp.code}")
+      end
+      json = JSON.parse(rsp.body)
+      if json.has_key?('error')
+        raise Error.new("Wit responded with an error: #{json['error']}")
+      end
+      logger.debug("#{meth_class} #{uri} #{json}")
+      json
+    end
+  end
+
+  def validate_actions(logger, actions)
+    [:send].each do |action|
+      if !actions.has_key?(action)
+        logger.warn "The #{action} action is missing. #{LEARN_MORE}"
+      end
+    end
+    actions.each_pair do |k, v|
+      if !k.is_a?(Symbol)
+        logger.warn "The '#{k}' action name should be a symbol"
+      end
+      if !(v.respond_to?(:call) && v.lambda?)
+        logger.warn "The '#{k}' action should be a lambda function"
+      end
+      if k == :send && v.arity != 2
+        logger.warn "The \'send\' action should take 2 arguments: request and response. #{LEARN_MORE}"
+      end
+      if k != :send && v.arity != 1
+        logger.warn "The '#{k}' action should take 1 argument: request. #{LEARN_MORE}"
+      end
+    end
+    return actions
+  end
 end
