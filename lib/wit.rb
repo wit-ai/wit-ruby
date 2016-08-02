@@ -52,67 +52,6 @@ class Wit
     return res
   end
 
-  def __run_actions(session_id, current_request, message, context, i)
-    if i <= 0
-      raise Error.new('Max steps reached, stopping.')
-    end
-    json = converse(session_id, message, context)
-    if json['type'].nil?
-      raise Error.new('Couldn\'t find type in Wit response')
-    end
-    if current_request != @_sessions[session_id]
-      return context
-    end
-
-    logger.debug("Context: #{context}")
-    logger.debug("Response type: #{json['type']}")
-
-    # backwards-compatibility with API version 20160516
-    if json['type'] == 'merge'
-      json['type'] = 'action'
-      json['action'] = 'merge'
-    end
-
-    if json['type'] == 'error'
-      raise Error.new('Oops, I don\'t know what to do.')
-    end
-
-    if json['type'] == 'stop'
-      return context
-    end
-
-    request = {
-      'session_id' => session_id,
-      'context' => context.clone,
-      'text' => message,
-      'entities' => json['entities']
-    }
-    if json['type'] == 'msg'
-      throw_if_action_missing(:send)
-      response = {
-        'text' => json['msg'],
-        'quickreplies' => json['quickreplies'],
-      }
-      @actions[:send].call(request, response)
-    elsif json['type'] == 'action'
-      action = json['action'].to_sym
-      throw_if_action_missing(action)
-      context = @actions[action].call(request)
-      if context.nil?
-        logger.warn('missing context - did you forget to return it?')
-        context = {}
-      end
-    else
-      raise Error.new("unknown type: #{json['type']}")
-    end
-
-    if current_request != @_sessions[session_id]
-      return context
-    end
-
-    return __run_actions(session_id, current_request, nil, context, i - 1)
-  end
-
   def run_actions(session_id, message, context={}, max_steps=DEFAULT_MAX_STEPS)
     if !@actions
       throw_must_have_actions
@@ -174,7 +113,68 @@ class Wit
     raise Error.new('You must provide the `actions` parameter to be able to use runActions. ' + LEARN_MORE)
   end
 
-  private :__run_actions
+  private
+
+  def __run_actions(session_id, current_request, message, context, i)
+    if i <= 0
+      raise Error.new('Max steps reached, stopping.')
+    end
+    json = converse(session_id, message, context)
+    if json['type'].nil?
+      raise Error.new('Couldn\'t find type in Wit response')
+    end
+    if current_request != @_sessions[session_id]
+      return context
+    end
+
+    logger.debug("Context: #{context}")
+    logger.debug("Response type: #{json['type']}")
+
+    # backwards-compatibility with API version 20160516
+    if json['type'] == 'merge'
+      json['type'] = 'action'
+      json['action'] = 'merge'
+    end
+
+    if json['type'] == 'error'
+      raise Error.new('Oops, I don\'t know what to do.')
+    end
+
+    if json['type'] == 'stop'
+      return context
+    end
+
+    request = {
+      'session_id' => session_id,
+      'context' => context.clone,
+      'text' => message,
+      'entities' => json['entities']
+    }
+    if json['type'] == 'msg'
+      throw_if_action_missing(:send)
+      response = {
+        'text' => json['msg'],
+        'quickreplies' => json['quickreplies'],
+      }
+      @actions[:send].call(request, response)
+    elsif json['type'] == 'action'
+      action = json['action'].to_sym
+      throw_if_action_missing(action)
+      context = @actions[action].call(request)
+      if context.nil?
+        logger.warn('missing context - did you forget to return it?')
+        context = {}
+      end
+    else
+      raise Error.new("unknown type: #{json['type']}")
+    end
+
+    if current_request != @_sessions[session_id]
+      return context
+    end
+
+    return __run_actions(session_id, current_request, nil, context, i - 1)
+  end
 
   def req(logger, access_token, meth_class, path, params={}, payload={})
     uri = URI(WIT_API_HOST + path)
