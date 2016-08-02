@@ -8,9 +8,6 @@ WIT_API_VERSION = ENV['WIT_API_VERSION']  || '20160516'
 DEFAULT_MAX_STEPS = 5
 LEARN_MORE = 'Learn more at https://wit.ai/docs/quickstart'
 
-class WitException < Exception
-end
-
 def req(logger, access_token, meth_class, path, params={}, payload={})
   uri = URI(WIT_API_HOST + path)
   uri.query = URI.encode_www_form(params)
@@ -26,11 +23,11 @@ def req(logger, access_token, meth_class, path, params={}, payload={})
   Net::HTTP.start(uri.host, uri.port, {:use_ssl => uri.scheme == 'https'}) do |http|
     rsp = http.request(request)
     if rsp.code.to_i != 200
-      raise WitException.new("HTTP error code=#{rsp.code}")
+      raise Error.new("HTTP error code=#{rsp.code}")
     end
     json = JSON.parse(rsp.body)
     if json.has_key?('error')
-      raise WitException.new("Wit responded with an error: #{json['error']}")
+      raise Error.new("Wit responded with an error: #{json['error']}")
     end
     logger.debug("#{meth_class} #{uri} #{json}")
     json
@@ -61,6 +58,8 @@ def validate_actions(logger, actions)
 end
 
 class Wit
+  class Error < StandardError; end
+
   def initialize(opts = {})
     @access_token = opts[:access_token]
 
@@ -92,7 +91,7 @@ class Wit
 
   def converse(session_id, msg, context={}, reset=nil)
     if !context.is_a?(Hash)
-      raise WitException.new('context should be a Hash')
+      raise Error.new('context should be a Hash')
     end
     params = {}
     params[:q] = msg unless msg.nil?
@@ -104,11 +103,11 @@ class Wit
 
   def __run_actions(session_id, current_request, message, context, i)
     if i <= 0
-      raise WitException.new('Max steps reached, stopping.')
+      raise Error.new('Max steps reached, stopping.')
     end
     json = converse(session_id, message, context)
     if json['type'].nil?
-      raise WitException.new('Couldn\'t find type in Wit response')
+      raise Error.new('Couldn\'t find type in Wit response')
     end
     if current_request != @_sessions[session_id]
       return context
@@ -124,7 +123,7 @@ class Wit
     end
 
     if json['type'] == 'error'
-      raise WitException.new('Oops, I don\'t know what to do.')
+      raise Error.new('Oops, I don\'t know what to do.')
     end
 
     if json['type'] == 'stop'
@@ -153,7 +152,7 @@ class Wit
         context = {}
       end
     else
-      raise WitException.new("unknown type: #{json['type']}")
+      raise Error.new("unknown type: #{json['type']}")
     end
 
     if current_request != @_sessions[session_id]
@@ -168,7 +167,7 @@ class Wit
       throw_must_have_actions
     end
     if !context.is_a?(Hash)
-      raise WitException.new('context should be a Hash')
+      raise Error.new('context should be a Hash')
     end
 
     # Figuring out whether we need to reset the last turn.
@@ -206,7 +205,7 @@ class Wit
 
       begin
         context = run_actions(session_id, msg, context, max_steps)
-      rescue WitException => exp
+      rescue Error => exp
         logger.error("error: #{exp.message}")
       end
     end
@@ -216,12 +215,12 @@ class Wit
 
   def throw_if_action_missing(action_name)
     if !@actions.has_key?(action_name)
-      raise WitException.new("unknown action: #{action_name}")
+      raise Error.new("unknown action: #{action_name}")
     end
   end
 
   def throw_must_have_actions()
-    raise WitException.new('You must provide the `actions` parameter to be able to use runActions. ' + LEARN_MORE)
+    raise Error.new('You must provide the `actions` parameter to be able to use runActions. ' + LEARN_MORE)
   end
 
   private :__run_actions

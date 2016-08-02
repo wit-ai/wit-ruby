@@ -1,3 +1,7 @@
+## development
+- Renamed WitException to Wit::Error
+- Changed Wit::Error to inherit from StandardError instead of Exception
+
 ## v4.1.0
 
 - `converse` now takes `reset` as optional parameter.
