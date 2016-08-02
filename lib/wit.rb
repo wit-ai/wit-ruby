@@ -3,11 +3,6 @@ require 'logger'
 require 'net/http'
 require 'securerandom'
 
-WIT_API_HOST = ENV['WIT_URL'] || 'https://api.wit.ai'
-WIT_API_VERSION = ENV['WIT_API_VERSION']  || '20160516'
-DEFAULT_MAX_STEPS = 5
-LEARN_MORE = 'Learn more at https://wit.ai/docs/quickstart'
-
 def req(logger, access_token, meth_class, path, params={}, payload={})
   uri = URI(WIT_API_HOST + path)
   uri.query = URI.encode_www_form(params)
@@ -59,6 +54,11 @@ end
 
 class Wit
   class Error < StandardError; end
+
+  WIT_API_HOST = ENV['WIT_URL'] || 'https://api.wit.ai'
+  WIT_API_VERSION = ENV['WIT_API_VERSION']  || '20160516'
+  DEFAULT_MAX_STEPS = 5
+  LEARN_MORE = 'Learn more at https://wit.ai/docs/quickstart'
 
   def initialize(opts = {})
     @access_token = opts[:access_token]

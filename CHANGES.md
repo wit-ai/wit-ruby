@@ -1,6 +1,7 @@
 ## development
 - Renamed WitException to Wit::Error
 - Changed Wit::Error to inherit from StandardError instead of Exception
+- Moved constants inside Wit namespace
 
 ## v4.1.0
 
