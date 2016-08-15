@@ -71,6 +71,8 @@ class Wit
     if opts[:actions]
       @actions = validate_actions(logger, opts[:actions])
     end
+
+    @_sessions = {}
   end
 
   def logger
@@ -88,24 +90,28 @@ class Wit
     return res
   end
 
-  def converse(session_id, msg, context={})
+  def converse(session_id, msg, context={}, reset=nil)
     if !context.is_a?(Hash)
       raise WitException.new('context should be a Hash')
     end
     params = {}
     params[:q] = msg unless msg.nil?
     params[:session_id] = session_id
+    params[:reset] = true if reset
     res = req(logger, @access_token, Net::HTTP::Post, '/converse', params, context)
     return res
   end
 
-  def __run_actions(session_id, message, context, i)
+  def __run_actions(session_id, current_request, message, context, i)
     if i <= 0
       raise WitException.new('Max steps reached, stopping.')
     end
     json = converse(session_id, message, context)
     if json['type'].nil?
       raise WitException.new('Couldn\'t find type in Wit response')
+    end
+    if current_request != @_sessions[session_id]
+      return context
     end
 
     logger.debug("Context: #{context}")
@@ -150,7 +156,11 @@ class Wit
       raise WitException.new("unknown type: #{json['type']}")
     end
 
-    return __run_actions(session_id, nil, context, i - 1)
+    if current_request != @_sessions[session_id]
+      return context
+    end
+
+    return __run_actions(session_id, current_request, nil, context, i - 1)
   end
 
   def run_actions(session_id, message, context={}, max_steps=DEFAULT_MAX_STEPS)
@@ -160,7 +170,22 @@ class Wit
     if !context.is_a?(Hash)
       raise WitException.new('context should be a Hash')
     end
-    return __run_actions(session_id, message, context, max_steps)
+
+    # Figuring out whether we need to reset the last turn.
+    # Each new call increments an index for the session.
+    # We only care about the last call to run_actions.
+    # All the previous ones are discarded (preemptive exit).
+    current_request = if @_sessions.has_key?(session_id) then @_sessions[session_id] + 1 else 1 end
+    @_sessions[session_id] = current_request
+
+    context = __run_actions(session_id, current_request, message, context, max_steps)
+
+    # Cleaning up once the last call to run_actions finishes.
+    if current_request == @_sessions[session_id]
+      @_sessions.delete(session_id)
+    end
+
+    return context
   end
 
   def interactive(context={}, max_steps=DEFAULT_MAX_STEPS)
