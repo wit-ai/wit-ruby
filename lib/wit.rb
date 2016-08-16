@@ -175,7 +175,10 @@ class Wit
     # Each new call increments an index for the session.
     # We only care about the last call to run_actions.
     # All the previous ones are discarded (preemptive exit).
-    current_request = if @_sessions.has_key?(session_id) then @_sessions[session_id] + 1 else 1 end
+    current_request = 1
+    if @_sessions.has_key?(session_id)
+      current_request = @_sessions[session_id] + 1
+    end
     @_sessions[session_id] = current_request
 
     context = __run_actions(session_id, current_request, message, context, max_steps)
