@@ -199,7 +199,7 @@ class Wit
     session_id = SecureRandom.uuid
     while true
       print '> '
-      msg = gets.strip
+      msg = STDIN.gets.strip
       if msg == ''
         next
       end
