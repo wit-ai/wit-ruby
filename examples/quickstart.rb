@@ -29,6 +29,7 @@ actions = {
     loc = first_entity_value(entities, 'location')
     if loc
         context['forecast'] = 'sunny'
+        context.delete('missingLocation')
     else
         context['missingLocation'] = true
         context.delete('forecast')
