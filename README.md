@@ -120,6 +120,45 @@ Example:
 client.interactive
 ```
 
+### CRUD operations for entities
+payload in the parameters is a hash containing API arguments
+
+#### .get_entities()
+Returns a list of available entities for the app.  
+See [GET /entities](https://wit.ai/docs/http/20160526#get--entities-link)
+
+#### .post_entities(payload)
+Creates a new entity with the given attributes.  
+See [POST /entities](https://wit.ai/docs/http/20160526#post--entities-link)
+
+#### .get_entity(entity_id)
+Returns all the expressions validated for an entity.  
+See [GET /entities/:entity-id](https://wit.ai/docs/http/20160526#get--entities-:entity-id-link)
+
+#### .put_entities(entity_id, payload)
+Updates an entity with the given attributes.  
+See [PUT /entities/:entity-id](https://wit.ai/docs/http/20160526#put--entities-:entity-id-link)
+
+#### .delete_entities(entity_id)
+Permanently remove the entity.  
+See [DELETE /entities/:entity-id](https://wit.ai/docs/http/20160526#delete--entities-:entity-id-link)
+
+#### .post_values(entity_id, payload)
+Add a possible value into the list of values for the entity.  
+See [POST /entities/:entity-id/values](https://wit.ai/docs/http/20160526#post--entities-:entity-id-values-link)
+
+#### .delete_values(entity_id, value)
+Delete a canonical value from the entity.  
+See [DELETE /entities/:entity-id/values/:value](https://wit.ai/docs/http/20160526#delete--entities-:entity-id-values-link)
+
+#### post_expressions(entity_id, value, payload)
+Create a new expression of the canonical value of the entity.  
+See [POST /entities/:entity-id/values/:value/expressions](https://wit.ai/docs/http/20160526#post--entities-:entity-id-values-:value-id-expressions-link)
+
+#### delete_expressions(entity_id, value, expression)
+Delete an expression of the canonical value of the entity.  
+See [DELETE /entities/:entity-id/values/:value/expressions/:expression](https://wit.ai/docs/http/20160526#delete--entities-:entity-id-values-:value-id-expressions-link)
+
 See the [docs](https://wit.ai/docs) for more information.
 
 ### Logging
