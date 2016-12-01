@@ -113,7 +113,67 @@ class Wit
     raise Error.new('You must provide the `actions` parameter to be able to use runActions. ' + LEARN_MORE)
   end
 
+  def get_entities
+    req(logger, @access_token, Net::HTTP::Get, "/entities")
+  end
+
+  def post_entities(payload)
+    payload = payload.map {|k, v| [(k.to_sym rescue k), v]}.to_h.reject{ |k| ![:id, :doc, :values, :lookups].include?(k) }
+    validate_payload payload
+    req(logger, @access_token, Net::HTTP::Post, "/entities", {}, payload)
+  end
+
+  def get_entity(entity_id)
+    req(logger, @access_token, Net::HTTP::Get, "/entities/#{URI.encode(entity_id)}")
+  end
+
+  def put_entities(entity_id, payload)
+    payload = payload.map {|k, v| [(k.to_sym rescue k), v]}.to_h.reject{ |k| ![:id, :doc, :values].include?(k) }
+    validate_payload payload
+    req(logger, @access_token, Net::HTTP::Put, "/entities/#{URI.encode(entity_id)}", {}, payload)
+  end
+
+  def delete_entities(entity_id)
+    req(logger, @access_token, Net::HTTP::Delete, "/entities/#{URI.encode(entity_id)}")
+  end
+
+  def post_values(entity_id, payload)
+    payload = payload.map {|k, v| [(k.to_sym rescue k), v]}.to_h.reject{ |k| ![:value, :expressions, :metadata].include?(k) }
+    validate_payload payload
+    req(logger, @access_token, Net::HTTP::Post, "/entities/#{URI.encode(entity_id)}/values", {}, payload)
+  end
+
+  def delete_values(entity_id, value)
+    req(logger, @access_token, Net::HTTP::Delete, "/entities/#{URI.encode(entity_id)}/values/#{URI.encode(value)}")
+  end
+
+  def post_expressions(entity_id, value, payload)
+    payload = payload.map {|k, v| [(k.to_sym rescue k), v]}.to_h.reject{ |k| ![:expression].include?(k) }
+    validate_payload payload
+    req(logger,@access_token, Net::HTTP::Post, "/entities/#{URI.encode(entity_id)}/values/#{URI.encode(value)}/expressions", {}, payload)
+  end
+
+  def delete_expressions(entity_id, value, expression)
+    req(logger,@access_token, Net::HTTP::Delete, "/entities/#{URI.encode(entity_id)}/values/#{URI.encode(value)}/expressions/#{URI.encode(expression)}")
+  end
+
   private
+
+  def validate_payload(payload)
+    key_types = {
+      id: String,
+      doc: String,
+      value: String,
+      values: Array,
+      lookups: Array,
+      expression: String,
+      expressions: Array,
+      metadata: String,
+    }
+    payload.each do |k, v|
+      raise Error.new("#{k.to_s} in request body must be #{key_types[k].to_s} type") unless key_types[k] == v.class
+    end
+  end
 
   def __run_actions(session_id, current_request, message, context, i)
     if i <= 0
@@ -194,7 +254,7 @@ class Wit
         raise Error.new("HTTP error code=#{rsp.code}")
       end
       json = JSON.parse(rsp.body)
-      if json.has_key?('error')
+      if json.is_a?(Hash) and json.has_key?('error')
         raise Error.new("Wit responded with an error: #{json['error']}")
       end
       logger.debug("#{meth_class} #{uri} #{json}")
