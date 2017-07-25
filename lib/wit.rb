@@ -19,6 +19,7 @@ class Wit
     end
 
     if opts[:actions]
+      logger.warn('Stories and POST /converse have been deprecated. This will break in February 2018!')
       @actions = validate_actions(logger, opts[:actions])
     end
 
@@ -80,12 +81,7 @@ class Wit
     return context
   end
 
-  def interactive(context={}, max_steps=DEFAULT_MAX_STEPS)
-    if !@actions
-      throw_must_have_actions
-    end
-
-    session_id = SecureRandom.uuid
+  def interactive(context={})
     while true
       print '> '
       msg = STDIN.gets.strip
@@ -94,7 +90,7 @@ class Wit
       end
 
       begin
-        context = run_actions(session_id, msg, context, max_steps)
+        puts(message(msg))
       rescue Error => exp
         logger.error("error: #{exp.message}")
       end

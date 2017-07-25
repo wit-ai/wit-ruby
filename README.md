@@ -32,33 +32,19 @@ See the `examples` folder for more examples.
 
 `wit-ruby` provides a Wit class with the following methods:
 * `message` - the Wit [message API](https://wit.ai/docs/http/20160330#get-intent-via-text-link)
-* `converse` - the low-level Wit [converse API](https://wit.ai/docs/http/20160330#converse-link)
-* `run_actions` - a higher-level method to the Wit converse API
 * `interactive` - starts an interactive conversation with your bot
 
 ### Wit class
 
 The Wit constructor takes a `Hash` with the following symbol keys:
 * `:access_token` - the access token of your Wit instance
-* `:actions` - the `Hash` with your actions
-
-The `actions` `Hash` has action names as keys, and action implementations as values.
-Action names are symbols, and action implementations are lambda functions (not `Proc`).
 
 A minimal example looks like this:
 ```ruby
 require 'wit'
 
-actions = {
-  send: -> (request, response) {
-    puts("sending... #{response['text']}")
-  },
-  my_action: -> (request) {
-    return request['context']
-  },
-}
-
-client = Wit.new(access_token: access_token, actions: actions)
+client = Wit.new(access_token: access_token)
+client.message('set an alarm tomorrow at 7am')
 ```
 
 ### .message()
@@ -74,7 +60,18 @@ rsp = client.message('what is the weather in London?')
 puts("Yay, got Wit.ai response: #{rsp}")
 ```
 
+### .interactive()
+
+Starts an interactive conversation with your bot.
+
+Example:
+```ruby
+client.interactive
+```
+
 ### .run_actions()
+
+**DEPRECATED** See [our blog post](https://wit.ai/blog/2017/07/27/sunsetting-stories) for a migration plan.
 
 A higher-level method to the Wit converse API.
 `run_actions` resets the last turn on new messages and errors.
@@ -97,6 +94,8 @@ p "The session state is now: #{context2}"
 
 ### .converse()
 
+**DEPRECATED** See [our blog post](https://wit.ai/blog/2017/07/27/sunsetting-stories) for a migration plan.
+
 The low-level Wit [converse API](https://wit.ai/docs/http/20160330#converse-link).
 
 Takes the following parameters:
@@ -109,15 +108,6 @@ Example:
 ```ruby
 rsp = client.converse('my-user-session-42', 'what is the weather in London?', {})
 puts("Yay, got Wit.ai response: #{rsp}")
-```
-
-### .interactive()
-
-Starts an interactive conversation with your bot.
-
-Example:
-```ruby
-client.interactive
 ```
 
 ### CRUD operations for entities

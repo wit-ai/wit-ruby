@@ -1,4 +1,9 @@
-## development
+## v5.0.0
+
+- `converse` and `run_actions` are deprecated
+- `interactive` now calls `message`
+
+### Breaking changes
 - Renamed WitException to Wit::Error
 - Changed Wit::Error to inherit from StandardError instead of Exception
 - Moved constants inside Wit namespace
