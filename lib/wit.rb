@@ -34,9 +34,11 @@ class Wit
     end
   end
 
-  def message(msg)
+  def message(msg, n=nil, verbose=nil)
     params = {}
     params[:q] = msg unless msg.nil?
+    params[:n] = n unless n.nil?
+    params[:verbose] = verbose unless verbose.nil?
     res = req(logger, @access_token, Net::HTTP::Get, '/message', params)
     return res
   end
