@@ -15,4 +15,4 @@ actions = {
 }
 
 client = Wit.new(access_token: access_token, actions: actions)
-puts(client.message("What is the temperature", 1, true))
+client.interactive
