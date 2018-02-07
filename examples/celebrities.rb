@@ -41,7 +41,7 @@ def wikidata_description(celebrity)
   rsp = Net::HTTP.get_response(api)
   wikidata = JSON.parse(rsp.body)
   description = wikidata['entities'][wikidata_id]['descriptions']['en']['value']
-  return "ooo yes I know " + celebrity['name'] + " -- " + description
+  return "ooo yes I know #{celebrity['name']} -- #{description}"
 end
 
 client = Wit.new(access_token: access_token)
