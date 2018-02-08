@@ -9,7 +9,7 @@ access_token = ARGV[0]
 ARGV.shift
 
 # Joke example
-# See https://wit.ai/patapizza/example-joke
+# See https://wit.ai/aforaleka/wit-example-joke-bot/
 
 def first_entity_value(entities, entity)
   return nil unless entities.has_key? entity
@@ -18,7 +18,7 @@ def first_entity_value(entities, entity)
   return val.is_a?(Hash) ? val['value'] : val
 end
 
-all_jokes = {
+$all_jokes = {
   'chuck' => [
     'Chuck Norris counted to infinity - twice.',
     'Death once had a near-Chuck Norris experience.',
@@ -32,29 +32,24 @@ all_jokes = {
   ],
 }
 
-actions = {
-  send: -> (request, response) {
-    puts("sending... #{response['text']}")
-  },
-  merge: -> (request) {
-    context = request['context']
-    entities = request['entities']
+def handle_message(response)
+  entities = response['entities']
+  get_joke = first_entity_value(entities, 'getJoke')
+  greetings = first_entity_value(entities, 'greetings')
+  category = first_entity_value(entities, 'category')
+  sentiment = first_entity_value(entities, 'sentiment')
 
-    context.delete 'joke'
-    context.delete 'ack'
-    category = first_entity_value(entities, 'category')
-    context['category'] = category unless category.nil?
-    sentiment = first_entity_value(entities, 'sentiment')
-    context['ack'] = sentiment == 'positive' ? 'Glad you liked it.' : 'Hmm.' unless sentiment.nil?
-    return context
-  },
-  :'select-joke' => -> (request) {
-    context = request['context']
+  case
+  when get_joke
+    return $all_jokes[category || 'default'].sample
+  when sentiment
+    return sentiment == 'positive' ? 'Glad you liked it.' : 'Hmm.'
+  when greetings
+    return 'Hey this is joke bot :)'
+  else
+    return 'I can tell jokes! Say "tell me a joke about tech"!'
+  end
+end
 
-    context['joke'] = all_jokes[context['category'] || 'default'].sample
-    return context
-  },
-}
-
-client = Wit.new(access_token: access_token, actions: actions)
-client.interactive
+client = Wit.new(access_token: access_token)
+client.interactive(method(:handle_message))

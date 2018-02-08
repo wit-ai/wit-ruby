@@ -21,7 +21,7 @@ gem install wit-*.gem
 Run in your terminal:
 
 ```bash
-ruby examples/quickstart.rb <your_token>
+ruby examples/basic.rb <your_token>
 ```
 
 See the `examples` folder for more examples.
@@ -67,47 +67,6 @@ Starts an interactive conversation with your bot.
 Example:
 ```ruby
 client.interactive
-```
-
-### .run_actions()
-
-**DEPRECATED** See [our blog post](https://wit.ai/blog/2017/07/27/sunsetting-stories) for a migration plan.
-
-A higher-level method to the Wit converse API.
-`run_actions` resets the last turn on new messages and errors.
-
-Takes the following parameters:
-* `session_id` - a unique identifier describing the user session
-* `message` - the text received from the user
-* `context` - the `Hash` representing the session state
-* `max_steps` - (optional) the maximum number of actions to execute (defaults to 5)
-
-Example:
-```ruby
-session = 'my-user-session-42'
-context0 = {}
-context1 = client.run_actions(session, 'what is the weather in London?', context0)
-p "The session state is now: #{context1}"
-context2 = client.run_actions(session, 'and in Brussels?', context1)
-p "The session state is now: #{context2}"
-```
-
-### .converse()
-
-**DEPRECATED** See [our blog post](https://wit.ai/blog/2017/07/27/sunsetting-stories) for a migration plan.
-
-The low-level Wit [converse API](https://wit.ai/docs/http/20160330#converse-link).
-
-Takes the following parameters:
-* `session_id` - a unique identifier describing the user session
-* `msg` - the text received from the user
-* `context` - the `Hash` representing the session state
-* `reset` - (optional) whether to reset the last turn
-
-Example:
-```ruby
-rsp = client.converse('my-user-session-42', 'what is the weather in London?', {})
-puts("Yay, got Wit.ai response: #{rsp}")
 ```
 
 ### CRUD operations for entities

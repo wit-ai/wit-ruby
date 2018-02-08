@@ -8,11 +8,5 @@ end
 access_token = ARGV[0]
 ARGV.shift
 
-actions = {
-  send: -> (request, response) {
-    puts("sending... #{response['text']}")
-  },
-}
-
-client = Wit.new(access_token: access_token, actions: actions)
+client = Wit.new(access_token: access_token)
 client.interactive
