@@ -35,7 +35,7 @@ def handle_message(response)
 end
 
 def wikidata_description(celebrity)
-  return "I recognize " + celebrity['name'] unless celebrity.dig('external', 'wikidata')
+  return "I recognize #{celebrity['name']}" unless celebrity.dig('external', 'wikidata')
   wikidata_id = celebrity.fetch('external').fetch('wikidata')
   api = URI("https://www.wikidata.org/w/api.php?action=wbgetentities&format=json&ids=#{wikidata_id}&props=descriptions&languages=en")
   rsp = Net::HTTP.get_response(api)
