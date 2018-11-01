@@ -1,3 +1,5 @@
+# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+
 Gem::Specification.new do |s|
   s.name = 'wit'
   s.version = '6.0.0'
