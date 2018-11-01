@@ -123,3 +123,8 @@ See the [Logger class](http://ruby-doc.org/stdlib-2.1.0/libdoc/logger/rdoc/Logge
 ## Thanks
 
 Thanks to [Justin Workman](http://github.com/xtagon) for releasing a first version in October 2013. We really appreciate!
+
+
+## License
+
+The license for wit-ruby can be found in LICENSE file in the root directory of this source tree.
