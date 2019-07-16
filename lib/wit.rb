@@ -1,5 +1,3 @@
-# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
-
 require 'json'
 require 'logger'
 require 'net/http'
@@ -122,6 +120,9 @@ class Wit
     end
   end
 
+  class EntityAlreadyExists < Error
+  end
+
   def req(logger, access_token, meth_class, path, params={}, payload={})
     uri = URI(WIT_API_HOST + path)
     uri.query = URI.encode_www_form(params)
@@ -134,8 +135,13 @@ class Wit
     request.add_field 'Content-Type', 'application/json'
     request.body = payload.to_json
 
+
     Net::HTTP.start(uri.host, uri.port, {:use_ssl => uri.scheme == 'https'}) do |http|
       rsp = http.request(request)
+      if rsp.body =~ /An entity with this name already exists/
+        raise EntityAlreadyExists.new
+      end
+
       if rsp.code.to_i != 200
         raise Error.new("HTTP error code=#{rsp.code}")
       end
