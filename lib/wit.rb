@@ -1,3 +1,5 @@
+# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+
 require 'json'
 require 'logger'
 require 'net/http'
