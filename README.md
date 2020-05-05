@@ -128,3 +128,13 @@ Thanks to [Justin Workman](http://github.com/xtagon) for releasing a first versi
 ## License
 
 The license for wit-ruby can be found in LICENSE file in the root directory of this source tree.
+
+
+## Terms of Use
+
+Our terms of use can be found at https://opensource.facebook.com/legal/terms.
+
+
+## Privacy Policy
+
+Our privacy policy can be found at https://opensource.facebook.com/legal/privacy.
