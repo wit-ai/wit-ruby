@@ -11,13 +11,13 @@ access_token = ARGV[0]
 ARGV.shift
 
 # Joke example
-# See https://wit.ai/aforaleka/wit-example-joke-bot/
+# See https://wit.ai/aleka/wit-example-joke-bot/
 
-def first_entity_value(entities, entity)
-  return nil unless entities.has_key? entity
-  val = entities[entity][0]['value']
+def first_value(obj, key)
+  return nil unless obj.has_key? key
+  val = obj[key][0]['value']
   return nil if val.nil?
-  return val.is_a?(Hash) ? val['value'] : val
+  return val
 end
 
 $all_jokes = {
@@ -36,10 +36,11 @@ $all_jokes = {
 
 def handle_message(response)
   entities = response['entities']
-  get_joke = first_entity_value(entities, 'getJoke')
-  greetings = first_entity_value(entities, 'greetings')
-  category = first_entity_value(entities, 'category')
-  sentiment = first_entity_value(entities, 'sentiment')
+  traits = response['traits']
+  get_joke = first_value(traits, 'getJoke')
+  greetings = first_value(traits, 'wit$greetings')
+  category = first_value(entities, 'category:category')
+  sentiment = first_value(traits, 'wit$sentiment')
 
   case
   when get_joke

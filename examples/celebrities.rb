@@ -11,19 +11,25 @@ access_token = ARGV[0]
 ARGV.shift
 
 # Celebrities example
-# See https://wit.ai/aforaleka/wit-example-celebrities/
+# See https://wit.ai/aleka/wit-example-celebrities/
 
-def first_entity_value(entities, entity)
+def first_entity_resolved_value(entities, entity)
   return nil unless entities.has_key? entity
-  val = entities[entity][0]['value']
+  val = entities[entity][0]['resolved']['values'][0]
+  return nil if val.nil?
+  return val
+end
+
+def first_trait_value(traits, trait)
+  return nil unless traits.has_key? trait
+  val = traits[trait][0]['value']
   return nil if val.nil?
   return val
 end
 
 def handle_message(response)
-  entities = response['entities']
-  greetings = first_entity_value(entities, 'greetings')
-  celebrity = first_entity_value(entities, 'notable_person')
+  greetings = first_trait_value(response['traits'], 'wit$greetings')
+  celebrity = first_entity_resolved_value(responsee['entities'], 'wit$notable_person')
 
   case
   when celebrity

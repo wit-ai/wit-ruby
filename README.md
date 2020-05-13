@@ -31,7 +31,7 @@ See the `examples` folder for more examples.
 ### Overview
 
 `wit-ruby` provides a Wit class with the following methods:
-* `message` - the Wit [message API](https://wit.ai/docs/http/20160330#get-intent-via-text-link)
+* `message` - the Wit [message API](https://wit.ai/docs/http/20200513#get-intent-via-text-link)
 * `interactive` - starts an interactive conversation with your bot
 
 ### Wit class
@@ -49,7 +49,7 @@ client.message('set an alarm tomorrow at 7am')
 
 ### .message()
 
-The Wit [message API](https://wit.ai/docs/http/20160330#get-intent-via-text-link).
+The Wit [message API](https://wit.ai/docs/http/20200513#get-intent-via-text-link).
 
 Takes the following parameters:
 * `msg` - the text you want Wit.ai to extract the information from
@@ -74,39 +74,39 @@ payload in the parameters is a hash containing API arguments
 
 #### .get_entities()
 Returns a list of available entities for the app.  
-See [GET /entities](https://wit.ai/docs/http/20160526#get--entities-link)
+See [GET /entities](https://wit.ai/docs/http/20200513#get--entities-link)
 
 #### .post_entities(payload)
 Creates a new entity with the given attributes.  
-See [POST /entities](https://wit.ai/docs/http/20160526#post--entities-link)
+See [POST /entities](https://wit.ai/docs/http/20200513#post--entities-link)
 
 #### .get_entity(entity_id)
-Returns all the expressions validated for an entity.  
-See [GET /entities/:entity-id](https://wit.ai/docs/http/20160526#get--entities-:entity-id-link)
+Returns all the information available for an entity.  
+See [GET /entities/:entity](https://wit.ai/docs/http/20200513#get--entities-:entity-link)
 
 #### .put_entities(entity_id, payload)
 Updates an entity with the given attributes.  
-See [PUT /entities/:entity-id](https://wit.ai/docs/http/20160526#put--entities-:entity-id-link)
+See [PUT /entities/:entity](https://wit.ai/docs/http/20200513#put--entities-:entity-link)
 
 #### .delete_entities(entity_id)
-Permanently remove the entity.  
-See [DELETE /entities/:entity-id](https://wit.ai/docs/http/20160526#delete--entities-:entity-id-link)
+Permanently removes the entity.  
+See [DELETE /entities/:entity](https://wit.ai/docs/http/20200513#delete--entities-:entity-link)
 
-#### .post_values(entity_id, payload)
-Add a possible value into the list of values for the entity.  
-See [POST /entities/:entity-id/values](https://wit.ai/docs/http/20160526#post--entities-:entity-id-values-link)
+#### .post_keywords(entity_id, payload)
+Adds a possible value into the list of keywords for the keywords entity.
+See [POST /entities/:entity/keywords](https://wit.ai/docs/http/20160526#post--entities-:entity-id-values-link)
 
-#### .delete_values(entity_id, value)
-Delete a canonical value from the entity.  
-See [DELETE /entities/:entity-id/values/:value](https://wit.ai/docs/http/20160526#delete--entities-:entity-id-values-link)
+#### .delete_keywords(entity_id, keyword)
+Deletes a keyword from the entity.  
+See [DELETE /entities/:entity/keywords/:keyword](https://wit.ai/docs/http/20200513#delete--entities-:entity-keywords-link)
 
-#### post_expressions(entity_id, value, payload)
-Create a new expression of the canonical value of the entity.  
-See [POST /entities/:entity-id/values/:value/expressions](https://wit.ai/docs/http/20160526#post--entities-:entity-id-values-:value-id-expressions-link)
+#### .post_synonyms(entity_id, keyword, payload)
+Creates a new synonym for the keyword of the entity.  
+See [POST /entities/:entity/keywords/:keyword/synonyms](https://wit.ai/docs/http/20200513#post--entities-:entity-keywords-:keyword-synonyms-link)
 
-#### delete_expressions(entity_id, value, expression)
-Delete an expression of the canonical value of the entity.  
-See [DELETE /entities/:entity-id/values/:value/expressions/:expression](https://wit.ai/docs/http/20160526#delete--entities-:entity-id-values-:value-id-expressions-link)
+#### delete_synonyms(entity_id, keyword, synonym)
+Deletes a synonym of the keyword of the entity.  
+See [DELETE /entities/:entity/keywords/:keyword/synonyms/:synonym](https://wit.ai/docs/http/20200513#delete--entities-:entity-keywords-:keyword-synonyms-link)
 
 See the [docs](https://wit.ai/docs) for more information.
 

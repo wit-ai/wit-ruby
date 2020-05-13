@@ -9,8 +9,7 @@ class Wit
   class Error < StandardError; end
 
   WIT_API_HOST = ENV['WIT_URL'] || 'https://api.wit.ai'
-  WIT_API_VERSION = ENV['WIT_API_VERSION']  || '20160516'
-  DEFAULT_MAX_STEPS = 5
+  WIT_API_VERSION = ENV['WIT_API_VERSION']  || '20200513'
   LEARN_MORE = 'Learn more at https://wit.ai/docs/quickstart'
 
   def initialize(opts = {})
@@ -65,7 +64,7 @@ class Wit
   end
 
   def post_entities(payload)
-    payload = payload.map {|k, v| [(k.to_sym rescue k), v]}.to_h.reject{ |k| ![:id, :doc, :values, :lookups].include?(k) }
+    payload = payload.map {|k, v| [(k.to_sym rescue k), v]}.to_h.reject{ |k| ![:name, :roles, :lookups, :keywords].include?(k) }
     validate_payload payload
     req(logger, @access_token, Net::HTTP::Post, "/entities", {}, payload)
   end
@@ -75,7 +74,7 @@ class Wit
   end
 
   def put_entities(entity_id, payload)
-    payload = payload.map {|k, v| [(k.to_sym rescue k), v]}.to_h.reject{ |k| ![:id, :doc, :values].include?(k) }
+    payload = payload.map {|k, v| [(k.to_sym rescue k), v]}.to_h.reject{ |k| ![:name, :roles, :lookups, :keywords].include?(k) }
     validate_payload payload
     req(logger, @access_token, Net::HTTP::Put, "/entities/#{URI.encode(entity_id)}", {}, payload)
   end
@@ -84,24 +83,24 @@ class Wit
     req(logger, @access_token, Net::HTTP::Delete, "/entities/#{URI.encode(entity_id)}")
   end
 
-  def post_values(entity_id, payload)
-    payload = payload.map {|k, v| [(k.to_sym rescue k), v]}.to_h.reject{ |k| ![:value, :expressions, :metadata].include?(k) }
+  def post_keywords(entity_id, payload)
+    payload = payload.map {|k, v| [(k.to_sym rescue k), v]}.to_h.reject{ |k| ![:keyword, :synonyms].include?(k) }
     validate_payload payload
-    req(logger, @access_token, Net::HTTP::Post, "/entities/#{URI.encode(entity_id)}/values", {}, payload)
+    req(logger, @access_token, Net::HTTP::Post, "/entities/#{URI.encode(entity_id)}/keywords", {}, payload)
   end
 
-  def delete_values(entity_id, value)
-    req(logger, @access_token, Net::HTTP::Delete, "/entities/#{URI.encode(entity_id)}/values/#{URI.encode(value)}")
+  def delete_keywords(entity_id, keyword)
+    req(logger, @access_token, Net::HTTP::Delete, "/entities/#{URI.encode(entity_id)}/keywords/#{URI.encode(keyword)}")
   end
 
-  def post_expressions(entity_id, value, payload)
-    payload = payload.map {|k, v| [(k.to_sym rescue k), v]}.to_h.reject{ |k| ![:expression].include?(k) }
+  def post_synonyms(entity_id, keyword, payload)
+    payload = payload.map {|k, v| [(k.to_sym rescue k), v]}.to_h.reject{ |k| ![:synonym].include?(k) }
     validate_payload payload
-    req(logger,@access_token, Net::HTTP::Post, "/entities/#{URI.encode(entity_id)}/values/#{URI.encode(value)}/expressions", {}, payload)
+    req(logger,@access_token, Net::HTTP::Post, "/entities/#{URI.encode(entity_id)}/keywords/#{URI.encode(keyword)}/synonyms", {}, payload)
   end
 
-  def delete_expressions(entity_id, value, expression)
-    req(logger,@access_token, Net::HTTP::Delete, "/entities/#{URI.encode(entity_id)}/values/#{URI.encode(value)}/expressions/#{URI.encode(expression)}")
+  def delete_synonyms(entity_id, keyword, synonym)
+    req(logger,@access_token, Net::HTTP::Delete, "/entities/#{URI.encode(entity_id)}/keywords/#{URI.encode(keyword)}/synonyms/#{URI.encode(synonym)}")
   end
 
   private
@@ -109,13 +108,10 @@ class Wit
   def validate_payload(payload)
     key_types = {
       id: String,
-      doc: String,
-      value: String,
-      values: Array,
+      name: String,
+      roles: Array,
       lookups: Array,
-      expression: String,
-      expressions: Array,
-      metadata: String,
+      keywords: Array,
     }
     payload.each do |k, v|
       raise Error.new("#{k.to_s} in request body must be #{key_types[k].to_s} type") unless key_types[k] == v.class
