@@ -29,7 +29,7 @@ end
 
 def handle_message(response)
   greetings = first_trait_value(response['traits'], 'wit$greetings')
-  celebrity = first_entity_resolved_value(responsee['entities'], 'wit$notable_person')
+  celebrity = first_entity_resolved_value(response['entities'], 'wit$notable_person:notable_person')
 
   case
   when celebrity

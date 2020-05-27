@@ -59,6 +59,22 @@ class Wit
     puts
   end
 
+  def get_intents
+    req(logger, @access_token, Net::HTTP::Get, "/intents")
+  end
+
+  def get_intent(intent)
+    req(logger, @access_token, Net::HTTP::Get, "/intents/#{URI.encode(intent)}")
+  end
+
+  def post_intents(payload)
+    req(logger, @access_token, Net::HTTP::Post, "/intents", {}, payload)
+  end
+
+  def delete_intents(intent)
+    req(logger, @access_token, Net::HTTP::Delete, "/intents/#{URI.encode(intent)}")
+  end
+
   def get_entities
     req(logger, @access_token, Net::HTTP::Get, "/entities")
   end
@@ -69,38 +85,62 @@ class Wit
     req(logger, @access_token, Net::HTTP::Post, "/entities", {}, payload)
   end
 
-  def get_entity(entity_id)
-    req(logger, @access_token, Net::HTTP::Get, "/entities/#{URI.encode(entity_id)}")
+  def get_entity(entity)
+    req(logger, @access_token, Net::HTTP::Get, "/entities/#{URI.encode(entity)}")
   end
 
-  def put_entities(entity_id, payload)
+  def put_entities(entity, payload)
     payload = payload.map {|k, v| [(k.to_sym rescue k), v]}.to_h.reject{ |k| ![:name, :roles, :lookups, :keywords].include?(k) }
     validate_payload payload
-    req(logger, @access_token, Net::HTTP::Put, "/entities/#{URI.encode(entity_id)}", {}, payload)
+    req(logger, @access_token, Net::HTTP::Put, "/entities/#{URI.encode(entity)}", {}, payload)
   end
 
-  def delete_entities(entity_id)
-    req(logger, @access_token, Net::HTTP::Delete, "/entities/#{URI.encode(entity_id)}")
+  def delete_entities(entity)
+    req(logger, @access_token, Net::HTTP::Delete, "/entities/#{URI.encode(entity)}")
   end
 
-  def post_keywords(entity_id, payload)
+  def post_entities_keywords(entity, payload)
     payload = payload.map {|k, v| [(k.to_sym rescue k), v]}.to_h.reject{ |k| ![:keyword, :synonyms].include?(k) }
     validate_payload payload
-    req(logger, @access_token, Net::HTTP::Post, "/entities/#{URI.encode(entity_id)}/keywords", {}, payload)
+    req(logger, @access_token, Net::HTTP::Post, "/entities/#{URI.encode(entity)}/keywords", {}, payload)
   end
 
-  def delete_keywords(entity_id, keyword)
-    req(logger, @access_token, Net::HTTP::Delete, "/entities/#{URI.encode(entity_id)}/keywords/#{URI.encode(keyword)}")
+  def delete_entities_keywords(entity, keyword)
+    req(logger, @access_token, Net::HTTP::Delete, "/entities/#{URI.encode(entity)}/keywords/#{URI.encode(keyword)}")
   end
 
-  def post_synonyms(entity_id, keyword, payload)
+  def post_entities_keywords_synonyms(entity, keyword, payload)
     payload = payload.map {|k, v| [(k.to_sym rescue k), v]}.to_h.reject{ |k| ![:synonym].include?(k) }
     validate_payload payload
-    req(logger,@access_token, Net::HTTP::Post, "/entities/#{URI.encode(entity_id)}/keywords/#{URI.encode(keyword)}/synonyms", {}, payload)
+    req(logger,@access_token, Net::HTTP::Post, "/entities/#{URI.encode(entity)}/keywords/#{URI.encode(keyword)}/synonyms", {}, payload)
   end
 
-  def delete_synonyms(entity_id, keyword, synonym)
-    req(logger,@access_token, Net::HTTP::Delete, "/entities/#{URI.encode(entity_id)}/keywords/#{URI.encode(keyword)}/synonyms/#{URI.encode(synonym)}")
+  def delete_entities_keywords_synonyms(entity, keyword, synonym)
+    req(logger,@access_token, Net::HTTP::Delete, "/entities/#{URI.encode(entity)}/keywords/#{URI.encode(keyword)}/synonyms/#{URI.encode(synonym)}")
+  end
+
+  def get_traits
+    req(logger, @access_token, Net::HTTP::Get, "/traits")
+  end
+
+  def get_trait(trait)
+    req(logger, @access_token, Net::HTTP::Get, "/traits/#{URI.encode(trait)}")
+  end
+
+  def post_traits(payload)
+    req(logger, @access_token, Net::HTTP::Post, "/traits", {}, payload)
+  end
+
+  def post_traits_values(trait, payload)
+    req(logger, @access_token, Net::HTTP::Post, "/traits/#{URI.encode(trait)}/values", {}, payload)
+  end
+
+  def delete_traits_values(trait, value)
+    req(logger, @access_token, Net::HTTP::Delete, "/traits/#{URI.encode(trait)}/values/#{URI.encode(value)}")
+  end
+
+  def delete_traits(trait)
+    req(logger, @access_token, Net::HTTP::Delete, "/traits/#{URI.encode(trait)}")
   end
 
   private

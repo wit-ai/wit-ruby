@@ -69,8 +69,27 @@ Example:
 client.interactive
 ```
 
+### CRUD operations for intents
+`payload` in the parameters is a hash containing API arguments.
+
+#### .get_intents()
+Returns a list of available intents for the app.
+See [GET /intents](https://wit.ai/docs/http/20200513#get__intents_link).
+
+#### .get_intent(intent)
+Returns all available information about an intent.
+See [GET /intents/:intent](https://wit.ai/docs/http/20200513#get__intents__intent_link).
+
+#### .post_intents(payload)
+Creates a new intent.
+See [POST /intents](https://wit.ai/docs/http/20200513#post__intents_link).
+
+#### .delete_intents(intent)
+Permanently deletes the intent.
+See [DELETE /intents/:intent](https://wit.ai/docs/http/20200513#delete__intents__intent_link).
+
 ### CRUD operations for entities
-payload in the parameters is a hash containing API arguments
+`payload` in the parameters is a hash containing API arguments.
 
 #### .get_entities()
 Returns a list of available entities for the app.  
@@ -80,33 +99,61 @@ See [GET /entities](https://wit.ai/docs/http/20200513#get--entities-link)
 Creates a new entity with the given attributes.  
 See [POST /entities](https://wit.ai/docs/http/20200513#post--entities-link)
 
-#### .get_entity(entity_id)
+#### .get_entity(entity)
 Returns all the information available for an entity.  
 See [GET /entities/:entity](https://wit.ai/docs/http/20200513#get--entities-:entity-link)
 
-#### .put_entities(entity_id, payload)
+#### .put_entities(entity, payload)
 Updates an entity with the given attributes.  
 See [PUT /entities/:entity](https://wit.ai/docs/http/20200513#put--entities-:entity-link)
 
-#### .delete_entities(entity_id)
+#### .delete_entities(entity)
 Permanently removes the entity.  
 See [DELETE /entities/:entity](https://wit.ai/docs/http/20200513#delete--entities-:entity-link)
 
-#### .post_keywords(entity_id, payload)
+#### .post_entities_keywords(entity, payload)
 Adds a possible value into the list of keywords for the keywords entity.
 See [POST /entities/:entity/keywords](https://wit.ai/docs/http/20160526#post--entities-:entity-id-values-link)
 
-#### .delete_keywords(entity_id, keyword)
+#### .delete_entities_keywords(entity, keyword)
 Deletes a keyword from the entity.  
 See [DELETE /entities/:entity/keywords/:keyword](https://wit.ai/docs/http/20200513#delete--entities-:entity-keywords-link)
 
-#### .post_synonyms(entity_id, keyword, payload)
+#### .post_entities_keywords_synonyms(entity, keyword, payload)
 Creates a new synonym for the keyword of the entity.  
 See [POST /entities/:entity/keywords/:keyword/synonyms](https://wit.ai/docs/http/20200513#post--entities-:entity-keywords-:keyword-synonyms-link)
 
-#### delete_synonyms(entity_id, keyword, synonym)
+#### delete_entities_keywords_synonyms(entity, keyword, synonym)
 Deletes a synonym of the keyword of the entity.  
 See [DELETE /entities/:entity/keywords/:keyword/synonyms/:synonym](https://wit.ai/docs/http/20200513#delete--entities-:entity-keywords-:keyword-synonyms-link)
+
+### CRUD operations for traits
+`payload` in the parameters is a hash containing API arguments.
+
+#### .get_traits()
+Returns a list of available traits for the app.
+See [GET /traits](https://wit.ai/docs/http/20200513#get__traits_link).
+
+#### .get_trait(trait)
+Returns all available information about a trait.
+See [GET /traits/:trait](https://wit.ai/docs/http/20200513#get__traits__trait_link).
+
+#### .post_traits(payload)
+Creates a new trait.
+See [POST /traits](https://wit.ai/docs/http/20200513#post__traits_link).
+
+#### .post_traits_values(trait, payload)
+Adds a new value to an existing trait.
+See [POST /traits/:trait/values](https://wit.ai/docs/http/20200513#post__traits__trait_values_link).
+
+#### .delete_traits_values(trait, value)
+Permanently deletes a value of an existing trait.
+See [POST /traits/:trait/values](https://wit.ai/docs/http/20200513#delete__traits__trait_values_link).
+
+#### .delete_traits(trait)
+Permanently deletes the trait.
+See [DELETE /traits/:trait](https://wit.ai/docs/http/20200513#delete__traits__trait_link).
+
 
 See the [docs](https://wit.ai/docs) for more information.
 
