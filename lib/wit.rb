@@ -59,6 +59,12 @@ class Wit
     puts
   end
 
+  def create_new_app(payload, set_new_app_token = true)
+    response = req(logger, @access_token, Net::HTTP::Post, "/apps", {}, payload)
+    @access_token = response['access_token'] if set_new_app_token
+    return response
+  end
+
   def get_intents
     req(logger, @access_token, Net::HTTP::Get, "/intents")
   end
