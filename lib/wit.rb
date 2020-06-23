@@ -59,10 +59,22 @@ class Wit
     puts
   end
 
-  def create_new_app(payload, set_new_app_token = true)
+  def create_new_app(payload, set_new_app_token = false)
     response = req(logger, @access_token, Net::HTTP::Post, "/apps", {}, payload)
     @access_token = response['access_token'] if set_new_app_token
     return response
+  end
+
+  def train(payload)
+    payload = [payload] if payload.is_a? Hash
+
+    payload.each do |utternace|
+      unless utternace[:entities].empty?
+        utternace[:entities] = validate_entities utternace[:entities]
+      end
+      validate_payload utternace
+    end
+    req(logger, @access_token, Net::HTTP::Post, "/utterances", {}, payload)
   end
 
   def get_intents
@@ -158,10 +170,35 @@ class Wit
       roles: Array,
       lookups: Array,
       keywords: Array,
+      text: String,
+      intent: String,
+      entities: Array,
+      traits: Array
     }
     payload.each do |k, v|
       raise Error.new("#{k.to_s} in request body must be #{key_types[k].to_s} type") unless key_types[k] == v.class
     end
+  end
+
+  def validate_entities(entities)
+    entity_keys = {
+      entity: String,
+      start: Integer,
+      end: Integer,
+      body: String,
+      entities: Array
+    }
+    entities.each do |entity|
+      entity = entity.map {|k, v| [(k.to_sym rescue k), v]}.to_h.reject{ |k| !entity_keys.keys.include?(k) }
+      entity.each do |k, v|
+        if k == :entities && !v.empty?
+          validate_entities(v)
+        end
+        raise Error.new("#{k.to_s} in entities body must be #{entity_keys[k].to_s} type") unless entity_keys[k] == v.class
+      end
+    end
+
+    return entities
   end
 
   def req(logger, access_token, meth_class, path, params={}, payload={})
@@ -178,12 +215,10 @@ class Wit
 
     Net::HTTP.start(uri.host, uri.port, {:use_ssl => uri.scheme == 'https'}) do |http|
       rsp = http.request(request)
-      if rsp.code.to_i != 200
-        raise Error.new("HTTP error code=#{rsp.code}")
-      end
       json = JSON.parse(rsp.body)
-      if json.is_a?(Hash) and json.has_key?('error')
-        raise Error.new("Wit responded with an error: #{json['error']}")
+      if rsp.code.to_i != 200
+        error_msg = (json.is_a?(Hash) and json.has_key?('error')) ?  json['error'] : json
+        raise Error.new("Wit responded with an error: #{error_msg}")
       end
       logger.debug("#{meth_class} #{uri} #{json}")
       json

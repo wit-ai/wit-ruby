@@ -47,6 +47,44 @@ client = Wit.new(access_token: access_token)
 client.message('set an alarm tomorrow at 7am')
 ```
 
+### Create new App Using the Access Token
+
+Creates new app using the server token.
+See [POST /apps](https://wit.ai/docs/http/20200513#post__apps_link).
+
+```ruby
+new_app_payload = {name: "new-app-1", lang: "en", private: true}
+# set_new_app_token will make the client use the new app's token.
+# that flag is set to false by default.
+client.create_new_app(new_app_payload, set_new_app_token = true)
+```
+
+### Train the app programatically using '/utterances'
+
+Trains and annotates an utterance or more.
+See [POST /utterances](https://wit.ai/docs/http/20200513#post__utterances_link).
+
+```ruby
+# you have to create the intent and entity before using any of them.
+utterance_payload = {
+  text: "I want to fly to china",
+  intent: "flight_request",
+  entities: [
+    {
+      "entity": "wit$location:to",
+      "start": 17,
+      "end": 22,
+      "body": "china",
+      "entities": []
+    }
+  ],
+  traits: []
+}
+
+# utterance payload can be a list of utterances or a single one
+client.train(utterance_payload)
+```
+
 ### .message()
 
 The Wit [message API](https://wit.ai/docs/http/20200513#get-intent-via-text-link).
