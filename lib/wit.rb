@@ -65,7 +65,7 @@ class Wit
     return response
   end
 
-  def train(payload)
+  def post_utterances(payload)
     payload = [payload] if payload.is_a? Hash
 
     payload.each do |utternace|

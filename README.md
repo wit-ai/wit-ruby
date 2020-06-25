@@ -82,7 +82,7 @@ utterance_payload = {
 }
 
 # utterance payload can be a list of utterances or a single one
-client.train(utterance_payload)
+client.post_utterances(utterance_payload)
 ```
 
 ### .message()
