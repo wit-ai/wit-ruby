@@ -68,11 +68,11 @@ class Wit
   def post_utterances(payload)
     payload = [payload] if payload.is_a? Hash
 
-    payload.each do |utternace|
-      unless utternace[:entities].empty?
-        utternace[:entities] = validate_entities utternace[:entities]
+    payload.each do |utterance|
+      unless utterance[:entities].empty?
+        utterance[:entities] = validate_entities utterance[:entities]
       end
-      validate_payload utternace
+      validate_payload utterance
     end
     req(logger, @access_token, Net::HTTP::Post, "/utterances", {}, payload)
   end
