@@ -1,3 +1,6 @@
+## v7.0.1
+- Updating encode function to encode more special characters that could be passed in when constructing a request URL.
+
 ## v7.0.0
 - Updated API version to latest: `20200513`.  Browse the latest HTTP API documentation [here](https://wit.ai/docs/http/20200513#get__message_link).
 - Added intents and traits CRUD methods.

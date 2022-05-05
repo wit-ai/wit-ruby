@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name = 'wit'
-  s.version = '7.0.0'
+  s.version = '7.0.1'
   s.summary = 'Ruby SDK for Wit.ai'
   s.description = 'Ruby SDK for Wit.ai'
   s.authors = ['The Wit Team']
