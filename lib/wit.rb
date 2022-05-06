@@ -1,5 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
 
+require 'cgi'
 require 'json'
 require 'logger'
 require 'net/http'
@@ -82,7 +83,7 @@ class Wit
   end
 
   def get_intent(intent)
-    req(logger, @access_token, Net::HTTP::Get, "/intents/#{URI.encode(intent)}")
+    req(logger, @access_token, Net::HTTP::Get, "/intents/#{CGI::escape(intent)}")
   end
 
   def post_intents(payload)
@@ -90,7 +91,7 @@ class Wit
   end
 
   def delete_intents(intent)
-    req(logger, @access_token, Net::HTTP::Delete, "/intents/#{URI.encode(intent)}")
+    req(logger, @access_token, Net::HTTP::Delete, "/intents/#{CGI::escape(intent)}")
   end
 
   def get_entities
@@ -104,37 +105,37 @@ class Wit
   end
 
   def get_entity(entity)
-    req(logger, @access_token, Net::HTTP::Get, "/entities/#{URI.encode(entity)}")
+    req(logger, @access_token, Net::HTTP::Get, "/entities/#{CGI::escape(entity)}")
   end
 
   def put_entities(entity, payload)
     payload = payload.map {|k, v| [(k.to_sym rescue k), v]}.to_h.reject{ |k| ![:name, :roles, :lookups, :keywords].include?(k) }
     validate_payload payload
-    req(logger, @access_token, Net::HTTP::Put, "/entities/#{URI.encode(entity)}", {}, payload)
+    req(logger, @access_token, Net::HTTP::Put, "/entities/#{CGI::escape(entity)}", {}, payload)
   end
 
   def delete_entities(entity)
-    req(logger, @access_token, Net::HTTP::Delete, "/entities/#{URI.encode(entity)}")
+    req(logger, @access_token, Net::HTTP::Delete, "/entities/#{CGI::escape(entity)}")
   end
 
   def post_entities_keywords(entity, payload)
     payload = payload.map {|k, v| [(k.to_sym rescue k), v]}.to_h.reject{ |k| ![:keyword, :synonyms].include?(k) }
     validate_payload payload
-    req(logger, @access_token, Net::HTTP::Post, "/entities/#{URI.encode(entity)}/keywords", {}, payload)
+    req(logger, @access_token, Net::HTTP::Post, "/entities/#{CGI::escape(entity)}/keywords", {}, payload)
   end
 
   def delete_entities_keywords(entity, keyword)
-    req(logger, @access_token, Net::HTTP::Delete, "/entities/#{URI.encode(entity)}/keywords/#{URI.encode(keyword)}")
+    req(logger, @access_token, Net::HTTP::Delete, "/entities/#{CGI::escape(entity)}/keywords/#{CGI::escape(keyword)}")
   end
 
   def post_entities_keywords_synonyms(entity, keyword, payload)
     payload = payload.map {|k, v| [(k.to_sym rescue k), v]}.to_h.reject{ |k| ![:synonym].include?(k) }
     validate_payload payload
-    req(logger,@access_token, Net::HTTP::Post, "/entities/#{URI.encode(entity)}/keywords/#{URI.encode(keyword)}/synonyms", {}, payload)
+    req(logger,@access_token, Net::HTTP::Post, "/entities/#{CGI::escape(entity)}/keywords/#{CGI::escape(keyword)}/synonyms", {}, payload)
   end
 
   def delete_entities_keywords_synonyms(entity, keyword, synonym)
-    req(logger,@access_token, Net::HTTP::Delete, "/entities/#{URI.encode(entity)}/keywords/#{URI.encode(keyword)}/synonyms/#{URI.encode(synonym)}")
+    req(logger,@access_token, Net::HTTP::Delete, "/entities/#{CGI::escape(entity)}/keywords/#{CGI::escape(keyword)}/synonyms/#{CGI::escape(synonym)}")
   end
 
   def get_traits
@@ -142,7 +143,7 @@ class Wit
   end
 
   def get_trait(trait)
-    req(logger, @access_token, Net::HTTP::Get, "/traits/#{URI.encode(trait)}")
+    req(logger, @access_token, Net::HTTP::Get, "/traits/#{CGI::escape(trait)}")
   end
 
   def post_traits(payload)
@@ -150,15 +151,15 @@ class Wit
   end
 
   def post_traits_values(trait, payload)
-    req(logger, @access_token, Net::HTTP::Post, "/traits/#{URI.encode(trait)}/values", {}, payload)
+    req(logger, @access_token, Net::HTTP::Post, "/traits/#{CGI::escape(trait)}/values", {}, payload)
   end
 
   def delete_traits_values(trait, value)
-    req(logger, @access_token, Net::HTTP::Delete, "/traits/#{URI.encode(trait)}/values/#{URI.encode(value)}")
+    req(logger, @access_token, Net::HTTP::Delete, "/traits/#{CGI::escape(trait)}/values/#{CGI::escape(value)}")
   end
 
   def delete_traits(trait)
-    req(logger, @access_token, Net::HTTP::Delete, "/traits/#{URI.encode(trait)}")
+    req(logger, @access_token, Net::HTTP::Delete, "/traits/#{CGI::escape(trait)}")
   end
 
   private
