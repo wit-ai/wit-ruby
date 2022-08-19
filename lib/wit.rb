@@ -171,6 +171,8 @@ class Wit
       roles: Array,
       lookups: Array,
       keywords: Array,
+      keyword: String,
+      synonyms: Array,
       text: String,
       intent: String,
       entities: Array,
